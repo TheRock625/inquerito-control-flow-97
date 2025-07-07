@@ -1,15 +1,16 @@
 
 // Função para exportar dados para um arquivo JSON
-export const exportProcessData = () => {
-  const processes = (window as any).sharedProcesses || [];
-  const completedActions = (window as any).sharedCompletedActions || {};
+export const exportProcessData = (processes?: any[], completedActions?: any) => {
+  // Se não foram passados parâmetros, usar os dados do window
+  const processesToExport = processes || (window as any).sharedProcesses || [];
+  const actionsToExport = completedActions || (window as any).sharedCompletedActions || {};
   
   const exportData = {
     version: '1.0',
     exportDate: new Date().toISOString(),
     data: {
-      processes,
-      completedActions
+      processes: processesToExport,
+      completedActions: actionsToExport
     }
   };
 

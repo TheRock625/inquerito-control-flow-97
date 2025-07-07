@@ -1,7 +1,7 @@
 
 import { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { Upload, Download } from 'lucide-react';
+import { Download, Upload } from 'lucide-react';
 import { exportProcessData, importProcessData } from '@/utils/dataExport';
 import { useToast } from '@/hooks/use-toast';
 
@@ -16,7 +16,11 @@ const DataExportImport = ({ onDataImported }: DataExportImportProps) => {
 
   const handleExport = () => {
     try {
-      exportProcessData();
+      // Capturar os dados atualizados diretamente do window
+      const currentProcesses = (window as any).sharedProcesses || [];
+      const currentCompletedActions = (window as any).sharedCompletedActions || {};
+      
+      exportProcessData(currentProcesses, currentCompletedActions);
       toast({
         title: "Exportação realizada",
         description: "Os dados foram exportados com sucesso!",
