@@ -1,7 +1,7 @@
 
 import { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { Import, Export } from 'lucide-react';
+import { Upload, Download } from 'lucide-react';
 import { exportProcessData, importProcessData } from '@/utils/dataExport';
 import { useToast } from '@/hooks/use-toast';
 
@@ -80,9 +80,9 @@ const DataExportImport = ({ onDataImported }: DataExportImportProps) => {
         variant="outline"
         size="sm"
         onClick={handleExport}
-        className="w-full justift-start"
+        className="w-full justify-start"
       >
-        <Export className="w-4 h-4 mr-2" />
+        <Download className="w-4 h-4 mr-2" />
         Exportar Base
       </Button>
       
@@ -93,7 +93,7 @@ const DataExportImport = ({ onDataImported }: DataExportImportProps) => {
         disabled={isImporting}
         className="w-full justify-start"
       >
-        <Import className="w-4 h-4 mr-2" />
+        <Upload className="w-4 h-4 mr-2" />
         {isImporting ? 'Importando...' : 'Importar Base'}
       </Button>
       
