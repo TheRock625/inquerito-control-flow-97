@@ -1,4 +1,3 @@
-
 import { NavLink, useLocation } from 'react-router-dom';
 import { LayoutDashboard, List, Settings, Home } from 'lucide-react';
 import {
@@ -10,8 +9,10 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarSeparator,
   useSidebar,
 } from '@/components/ui/sidebar';
+import DataExportImport from '@/components/DataExportImport';
 
 const menuItems = [
   {
@@ -73,6 +74,24 @@ export function AppSidebar() {
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarSeparator />
+
+        {/* Seção de Exportar/Importar */}
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-gray-600 font-medium">
+            {!isCollapsed && 'Base de Dados'}
+          </SidebarGroupLabel>
+          <SidebarGroupContent>
+            {!isCollapsed ? (
+              <DataExportImport />
+            ) : (
+              <div className="flex flex-col gap-2 px-2">
+                <DataExportImport />
+              </div>
+            )}
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
