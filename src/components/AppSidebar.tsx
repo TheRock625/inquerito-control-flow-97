@@ -1,5 +1,5 @@
 import { NavLink, useLocation } from 'react-router-dom';
-import { LayoutDashboard, List, Settings, Home } from 'lucide-react';
+import { LayoutDashboard, List, Settings, Home, LogOut, User } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -12,7 +12,8 @@ import {
   SidebarSeparator,
   useSidebar,
 } from '@/components/ui/sidebar';
-import DataExportImport from '@/components/DataExportImport';
+import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/hooks/use-toast';
 
 const menuItems = [
   {
@@ -36,6 +37,8 @@ export function AppSidebar() {
   const { state } = useSidebar();
   const location = useLocation();
   const isCollapsed = state === 'collapsed';
+  const { user, signOut } = useAuth();
+  const { toast } = useToast();
 
   const getNavClassName = (path: string) => {
     const isActive = location.pathname === path;
@@ -79,19 +82,43 @@ export function AppSidebar() {
 
         <SidebarSeparator />
 
-        {/* Seção de Exportar/Importar */}
+        {/* Seção do Usuário */}
         <SidebarGroup>
           <SidebarGroupLabel className="text-gray-600 font-medium">
-            {!isCollapsed && 'Base de Dados'}
+            {!isCollapsed && 'Usuário'}
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            {!isCollapsed ? (
-              <DataExportImport />
-            ) : (
-              <div className="flex flex-col gap-2 px-2">
-                <DataExportImport />
-              </div>
-            )}
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton className="cursor-default">
+                  <User className="h-4 w-4" />
+                  {!isCollapsed && <span className="text-sm truncate">{user?.email}</span>}
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton 
+                  onClick={async () => {
+                    const { error } = await signOut();
+                    if (error) {
+                      toast({
+                        title: "Erro",
+                        description: "Erro ao fazer logout",
+                        variant: "destructive",
+                      });
+                    } else {
+                      toast({
+                        title: "Logout realizado",
+                        description: "Até logo!",
+                      });
+                    }
+                  }}
+                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                >
+                  <LogOut className="h-4 w-4" />
+                  {!isCollapsed && <span>Sair</span>}
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
