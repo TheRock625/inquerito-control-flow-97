@@ -228,7 +228,7 @@ const Processos = () => {
             <p className="text-lg">Nenhum processo encontrado com os filtros aplicados.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredProcesses.map((process) => (
               <ProcessCard
                 key={process.id}
