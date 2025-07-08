@@ -76,7 +76,7 @@ const ProcessCard = ({
     if (alertLevel === 'warning') return '🟡'; // Próximo do vencimento
     return '🟢'; // Normal
   };
-  return <div onClick={onClick} className="p-4 border cursor-pointer transition-all hover:shadow-lg bg-white border-gray-200 hover:border-gray-300 px-[16px] rounded-lg">
+  return <div onClick={onClick} className="p-6 border cursor-pointer transition-all hover:shadow-xl bg-white border-gray-200 hover:border-gray-300 rounded-xl shadow-lg hover:shadow-2xl transform hover:scale-[1.02] min-h-[280px] w-full">
       <div className="space-y-3">
         {/* Header com número e indicador */}
         <div className="flex items-center justify-between">
