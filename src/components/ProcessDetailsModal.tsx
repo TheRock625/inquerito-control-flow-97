@@ -82,7 +82,8 @@ const ProcessDetailsModal = ({
       status: process.status,
       dueDate: process.dueDate,
       forwarding: process.forwarding,
-      pendingActions: [...process.pendingActions]
+      pendingActions: [...process.pendingActions],
+      summary: process.summary || ''
     });
     setNewPendingAction('');
   };
@@ -148,6 +149,22 @@ const ProcessDetailsModal = ({
                   <div>
                     <span className="font-medium">Número:</span>
                     <p className="text-lg font-bold text-blue-700">{currentProcess.number}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Resumo:</span>
+                    {isEditMode ? (
+                      <textarea
+                        value={editingData.summary || ''}
+                        onChange={(e) => setEditingData(prev => ({ ...prev, summary: e.target.value }))}
+                        className="mt-1 w-full p-2 border border-gray-300 rounded-md resize-none"
+                        rows={3}
+                        placeholder="Digite um resumo para o processo..."
+                      />
+                    ) : (
+                      <p className="text-sm text-gray-600 leading-relaxed">
+                        {currentProcess.summary || 'Nenhum resumo cadastrado'}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <span className="font-medium">Status:</span>

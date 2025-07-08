@@ -140,7 +140,8 @@ const Index = () => {
           status: editData.status,
           dueDate: editData.dueDate,
           forwarding: editData.forwarding,
-          pendingActions: editData.pendingActions
+          pendingActions: editData.pendingActions,
+          summary: editData.summary
         };
       }
       return p;
@@ -322,7 +323,7 @@ const Index = () => {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredProcesses.map((process) => (
                 <ProcessCard
                   key={process.id}
@@ -330,15 +331,15 @@ const Index = () => {
                   onClick={() => setSelectedProcess(process)}
                 />
               ))}
-              
-              {filteredProcesses.length === 0 && (
+            </div>
+            
+            {filteredProcesses.length === 0 && (
                 <div className="text-center py-8 text-gray-500">
                   <BarChart3 className="w-12 h-12 mx-auto mb-4 text-gray-300" />
                   <p>Nenhum processo encontrado para este filtro.</p>
                   <p className="text-sm">Clique em "Limpar Filtro" para ver todos os processos.</p>
                 </div>
               )}
-            </div>
           </CardContent>
         </Card>
       </div>
