@@ -69,86 +69,66 @@ const ProcessCard = ({ process, onClick }: ProcessCardProps) => {
   const completedForProcess = completedActionsFromStorage[process.id] || [];
   const pendingCount = process.pendingActions.length - completedForProcess.length;
 
+  // Indicador de status baseado no vencimento
+  const getStatusIndicator = () => {
+    if (isOverdue) return '🔴'; // Vencido
+    if (alertLevel === 'warning') return '🟡'; // Próximo do vencimento
+    return '🟢'; // Normal
+  };
+
   return (
     <div
-      className="p-4 rounded-lg border-2 cursor-pointer transition-all hover:shadow-md bg-slate-50 border-slate-200 hover:bg-slate-100"
+      className="p-4 rounded-lg border cursor-pointer transition-all hover:shadow-lg bg-white border-gray-200 hover:border-gray-300"
       onClick={onClick}
     >
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-        <div className="flex-1">
-          <div className="flex items-center gap-3 mb-2">
-            <span className="font-bold text-lg text-blue-700 hover:text-blue-900 underline">
-              {process.number}
+      <div className="space-y-3">
+        {/* Header com número e indicador */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="text-lg font-bold text-blue-600">
+              {getStatusIndicator()} {process.number}
             </span>
-            <Badge variant="outline" className="bg-white">
-              {process.type}
-            </Badge>
-            <Badge className={getStatusColor(process.status)}>
-              {process.status}
-            </Badge>
           </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
-            <div className="flex items-center gap-2">
-              <span className={`font-medium ${isOverdue ? 'text-red-600' : 'text-gray-700'}`}>
-                Vencimento: 
-              </span>
-              <div className="flex items-center gap-1">
-                {showAlert && (
-                  <div className="relative group">
-                    <AlertTriangle className="w-4 h-4 text-yellow-500" />
-                    {isWeekendDate && (
-                      <div className="absolute bottom-6 left-0 hidden group-hover:block">
-                        <div className="bg-yellow-100 border border-yellow-300 rounded-lg p-2 shadow-lg whitespace-nowrap">
-                          <div className="flex items-center gap-2">
-                            <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                            <span className="text-xs text-yellow-800">Final de Semana</span>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )}
-                <span className={getDueDateColor(process.dueDate)}>
-                  {format(parseISO(process.dueDate), "dd/MM/yyyy", { locale: ptBR })}
-                </span>
-              </div>
-            </div>
-            <div>
-              <span className="font-medium text-gray-700">Encaminhamento: </span>
-              <Badge className={getForwardingColor(process.forwarding)}>
-                {process.forwarding}
-              </Badge>
-            </div>
-          </div>
-          
-          <div className="mt-2">
-            <span className="font-medium text-sm text-gray-700">Pendências: </span>
-            <span className="text-sm text-gray-600">
-              {pendingCount > 0 ? 
-                `${pendingCount} ${pendingCount === 1 ? 'ação pendente' : 'ações pendentes'}` : 
-                'Nenhuma pendência'
-              }
+          <Badge variant="outline" className="text-xs">
+            {process.type}
+          </Badge>
+        </div>
+
+        {/* Resumo do processo */}
+        {process.summary && (
+          <p className="text-sm text-gray-600 leading-relaxed">
+            {process.summary}
+          </p>
+        )}
+
+        {/* Informações principais */}
+        <div className="space-y-2">
+          <div className="flex items-center gap-2 text-sm">
+            <Calendar className="w-4 h-4 text-gray-400" />
+            <span className="text-gray-600">Vencimento:</span>
+            <span className={getDueDateColor(process.dueDate)}>
+              {format(parseISO(process.dueDate), "dd/MM/yyyy", { locale: ptBR })}
             </span>
+            {showAlert && (
+              <AlertTriangle className="w-4 h-4 text-yellow-500" />
+            )}
+          </div>
+
+          <div className="flex items-center gap-2 text-sm">
+            <div className="w-4 h-4 rounded-full bg-gray-400"></div>
+            <span className="text-gray-600">Status:</span>
+            <span className="font-medium">{process.status}</span>
           </div>
         </div>
-        
-        <div className="flex items-center gap-2">
-          {process.status.toUpperCase() === 'RELATADO' ? (
-            <Check className="w-5 h-5 text-green-600" />
-          ) : (
-            <>
-              {alertLevel === 'critical' && (
-                <AlertTriangle className="w-5 h-5 text-red-600" />
-              )}
-              {alertLevel === 'warning' && (
-                <Clock className="w-5 h-5 text-yellow-600" />
-              )}
-            </>
-          )}
-          <Button variant="outline" size="sm">
-            Ver Detalhes
+
+        {/* Botões de ação */}
+        <div className="flex gap-2 pt-2">
+          <Button variant="outline" size="sm" className="flex-1">
+            Detalhes
           </Button>
+          <Badge className={getForwardingColor(process.forwarding)} variant="secondary">
+            {process.forwarding}
+          </Badge>
         </div>
       </div>
     </div>

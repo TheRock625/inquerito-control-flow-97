@@ -16,6 +16,7 @@ interface Process {
   status: string;
   dueDate: string;
   forwarding: string;
+  summary?: string;
   pendingActions: string[];
   completedActions: { action: string; date: string; }[];
 }
@@ -39,6 +40,7 @@ const EditProcessModal = ({ open, onClose, process, onSave }: EditProcessModalPr
         status: process.status,
         dueDate: process.dueDate,
         forwarding: process.forwarding,
+        summary: process.summary || '',
         pendingActions: [...process.pendingActions]
       });
     }
@@ -124,6 +126,17 @@ const EditProcessModal = ({ open, onClose, process, onSave }: EditProcessModalPr
                 ))}
               </SelectContent>
             </Select>
+          </div>
+
+          <div>
+            <Label htmlFor="summary">Resumo</Label>
+            <Textarea
+              id="summary"
+              placeholder="Breve descrição do processo..."
+              value={formData.summary || ''}
+              onChange={(e) => setFormData(prev => ({ ...prev, summary: e.target.value }))}
+              rows={3}
+            />
           </div>
           
           <div>

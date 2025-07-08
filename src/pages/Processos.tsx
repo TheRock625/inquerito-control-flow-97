@@ -215,13 +215,20 @@ const Processos = () => {
         onClearFilters={clearFilters}
       />
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Processos ({filteredProcesses.length})</CardTitle>
-          <CardDescription>Lista de inquéritos, termos circunstanciados e PAAIs</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
+      <div>
+        <div className="mb-4">
+          <h2 className="text-xl font-semibold text-gray-900">
+            {filteredProcesses.length} processo{filteredProcesses.length !== 1 ? 's' : ''} encontrado{filteredProcesses.length !== 1 ? 's' : ''}
+          </h2>
+        </div>
+        
+        {filteredProcesses.length === 0 ? (
+          <div className="text-center py-12 text-gray-500">
+            <List className="w-16 h-16 mx-auto mb-4 text-gray-300" />
+            <p className="text-lg">Nenhum processo encontrado com os filtros aplicados.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {filteredProcesses.map((process) => (
               <ProcessCard
                 key={process.id}
@@ -229,16 +236,9 @@ const Processos = () => {
                 onClick={() => setSelectedProcess(process)}
               />
             ))}
-            
-            {filteredProcesses.length === 0 && (
-              <div className="text-center py-8 text-gray-500">
-                <List className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                <p>Nenhum processo encontrado com os filtros aplicados.</p>
-              </div>
-            )}
           </div>
-        </CardContent>
-      </Card>
+        )}
+      </div>
     </div>
   );
 };

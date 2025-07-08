@@ -25,6 +25,7 @@ const NewProcessModal = ({ open, onClose, onSave }: NewProcessModalProps) => {
     status: '',
     dueDate: '',
     forwarding: '',
+    summary: '',
     pendingActions: [] as string[]
   });
   const [newPendingAction, setNewPendingAction] = useState('');
@@ -56,6 +57,7 @@ const NewProcessModal = ({ open, onClose, onSave }: NewProcessModalProps) => {
       status: formData.status,
       dueDate: formData.dueDate,
       forwarding: formData.forwarding,
+      summary: formData.summary,
       pendingActions: formData.pendingActions,
       completedActions: []
     };
@@ -69,6 +71,7 @@ const NewProcessModal = ({ open, onClose, onSave }: NewProcessModalProps) => {
       status: '',
       dueDate: '',
       forwarding: '',
+      summary: '',
       pendingActions: []
     });
     setNewPendingAction('');
@@ -84,6 +87,7 @@ const NewProcessModal = ({ open, onClose, onSave }: NewProcessModalProps) => {
       status: '',
       dueDate: '',
       forwarding: '',
+      summary: '',
       pendingActions: []
     });
     setNewPendingAction('');
@@ -222,6 +226,17 @@ const NewProcessModal = ({ open, onClose, onSave }: NewProcessModalProps) => {
                 </SelectContent>
               </Select>
             </div>
+          </div>
+
+          <div>
+            <Label htmlFor="summary">Resumo</Label>
+            <Textarea
+              id="summary"
+              placeholder="Breve descrição do processo..."
+              value={formData.summary}
+              onChange={(e) => setFormData(prev => ({ ...prev, summary: e.target.value }))}
+              rows={3}
+            />
           </div>
 
           <div>
