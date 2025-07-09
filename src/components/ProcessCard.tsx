@@ -1,6 +1,7 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { AlertTriangle, Clock, Check, Calendar } from 'lucide-react';
+import { AlertTriangle, Clock, Check, Calendar, ListTodo } from 'lucide-react';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 import { cn } from '@/lib/utils';
 import { format, parseISO, differenceInDays, getDay } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -50,10 +51,12 @@ const getStatusColor = (status: string) => {
 interface ProcessCardProps {
   process: any;
   onClick: () => void;
+  completedActions?: string[];
 }
 const ProcessCard = ({
   process,
-  onClick
+  onClick,
+  completedActions = []
 }: ProcessCardProps) => {
   const alertLevel = getAlertLevel(process.dueDate);
   const isWeekendDate = isWeekend(process.dueDate);
@@ -66,9 +69,8 @@ const ProcessCard = ({
   const isOverdue = daysDiff < 0;
 
   // Contar pendências não completadas
-  const completedActionsFromStorage = (window as any).sharedCompletedActions || {};
-  const completedForProcess = completedActionsFromStorage[process.id] || [];
-  const pendingCount = process.pendingActions.length - completedForProcess.length;
+  const pendingActions = process.pending_actions || process.pendingActions || [];
+  const pendingCount = pendingActions.length - completedActions.length;
 
   // Indicador de status baseado no vencimento
   const getStatusIndicator = () => {
@@ -91,9 +93,11 @@ const ProcessCard = ({
         </div>
 
         {/* Resumo do processo */}
-        {process.summary && <p className="text-sm text-gray-600 leading-relaxed">
+        {process.summary && (
+          <p className="text-sm text-gray-600 leading-relaxed line-clamp-2">
             {process.summary}
-          </p>}
+          </p>
+        )}
 
         {/* Informações principais */}
         <div className="space-y-2">
@@ -113,6 +117,43 @@ const ProcessCard = ({
             <span className="text-gray-600">Status:</span>
             <span className="font-medium">{process.status}</span>
           </div>
+
+          {/* Providências Pendentes */}
+          {pendingActions.length > 0 && (
+            <HoverCard>
+              <HoverCardTrigger asChild>
+                <div className="flex items-center gap-2 text-sm cursor-pointer hover:bg-gray-50 p-1 rounded">
+                  <ListTodo className="w-4 h-4 text-orange-500" />
+                  <span className="text-gray-600">Providências:</span>
+                  <Badge variant="outline" className="text-xs bg-orange-50 text-orange-700">
+                    {pendingCount} pendente{pendingCount !== 1 ? 's' : ''}
+                  </Badge>
+                </div>
+              </HoverCardTrigger>
+              <HoverCardContent className="w-80">
+                <div className="space-y-2">
+                  <h4 className="text-sm font-semibold">Providências Pendentes</h4>
+                  <div className="space-y-1">
+                    {pendingActions.map((action: string, index: number) => {
+                      const isCompleted = completedActions.includes(action);
+                      return (
+                        <div key={index} className={`flex items-center gap-2 text-xs p-1 rounded ${
+                          isCompleted ? 'text-green-600 bg-green-50' : 'text-gray-700'
+                        }`}>
+                          {isCompleted ? (
+                            <Check className="w-3 h-3 text-green-600" />
+                          ) : (
+                            <Clock className="w-3 h-3 text-orange-500" />
+                          )}
+                          <span className={isCompleted ? 'line-through' : ''}>{action}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </HoverCardContent>
+            </HoverCard>
+          )}
         </div>
 
         {/* Botões de ação */}

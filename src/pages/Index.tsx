@@ -8,6 +8,8 @@ import NewProcessModal from '@/components/NewProcessModal';
 import ProcessCard from '@/components/ProcessCard';
 import ProcessDetailsModal from '@/components/ProcessDetailsModal';
 import { differenceInDays, parseISO } from 'date-fns';
+import { useProcesses } from '@/hooks/useProcesses';
+import { useCompletedActions } from '@/hooks/useCompletedActions';
 
 // Mock data
 const initialMockProcesses = [
@@ -60,111 +62,43 @@ if (!(window as any).sharedCompletedActions) {
 }
 
 const Index = () => {
-  const [mockProcesses, setMockProcesses] = useState(() => (window as any).sharedProcesses || []);
-  const [completedActions, setCompletedActions] = useState<{[key: number]: number[]}>(() => (window as any).sharedCompletedActions || {});
+  const { processes, addProcess, updateProcess, deleteProcess } = useProcesses();
+  const { completedActions, toggleActionCompletion } = useCompletedActions();
   const [isNewProcessModalOpen, setIsNewProcessModalOpen] = useState(false);
   const [selectedProcess, setSelectedProcess] = useState<any>(null);
   const [filterType, setFilterType] = useState<'all' | 'overdue' | 'dueSoon' | 'completed'>('all');
 
-  // Update shared data when local state changes
-  useEffect(() => {
-    (window as any).sharedProcesses = mockProcesses;
-  }, [mockProcesses]);
-
-  useEffect(() => {
-    (window as any).sharedCompletedActions = completedActions;
-  }, [completedActions]);
-
-  const handleSaveNewProcess = (newProcess: any) => {
-    const updatedProcesses = [...mockProcesses, newProcess];
-    setMockProcesses(updatedProcesses);
-    (window as any).sharedProcesses = updatedProcesses;
+  const handleSaveNewProcess = async (newProcess: any) => {
+    await addProcess(newProcess);
   };
 
-  const handleCompleteAction = (processId: number, actionIndex: number) => {
-    const process = mockProcesses.find(p => p.id === processId);
-    if (!process) return;
-
-    const action = process.pendingActions[actionIndex];
-    const isCurrentlyCompleted = completedActions[processId]?.includes(actionIndex);
-    
-    const newCompletedActions = {
-      ...completedActions,
-      [processId]: isCurrentlyCompleted 
-        ? completedActions[processId].filter(idx => idx !== actionIndex)
-        : [...(completedActions[processId] || []), actionIndex]
-    };
-    setCompletedActions(newCompletedActions);
-    (window as any).sharedCompletedActions = newCompletedActions;
-
-    // Atualizar histórico do processo
-    const updatedProcesses = mockProcesses.map(p => {
-      if (p.id === processId) {
-        let newCompletedActionsHistory = [...p.completedActions];
-        
-        if (isCurrentlyCompleted) {
-          newCompletedActionsHistory = newCompletedActionsHistory.filter(
-            item => !(item.action === action && item.date === new Date().toISOString().split('T')[0])
-          );
-        } else {
-          newCompletedActionsHistory.push({
-            action: action,
-            date: new Date().toISOString().split('T')[0]
-          });
-        }
-        
-        return {
-          ...p,
-          completedActions: newCompletedActionsHistory
-        };
-      }
-      return p;
-    });
-    
-    setMockProcesses(updatedProcesses);
-    (window as any).sharedProcesses = updatedProcesses;
+  const handleCompleteAction = async (processId: string, actionText: string) => {
+    await toggleActionCompletion(processId, actionText);
   };
 
-  const handleDeleteProcess = (processId: number) => {
-    const updatedProcesses = mockProcesses.filter(p => p.id !== processId);
-    setMockProcesses(updatedProcesses);
-    (window as any).sharedProcesses = updatedProcesses;
+  const handleDeleteProcess = async (processId: string) => {
+    await deleteProcess(processId);
     setSelectedProcess(null);
   };
 
-  const handleSaveProcess = (processId: number, editData: any) => {
-    const updatedProcesses = mockProcesses.map(p => {
-      if (p.id === processId) {
-        return {
-          ...p,
-          status: editData.status,
-          dueDate: editData.dueDate,
-          forwarding: editData.forwarding,
-          pendingActions: editData.pendingActions,
-          summary: editData.summary
-        };
-      }
-      return p;
-    });
-
-    setMockProcesses(updatedProcesses);
-    (window as any).sharedProcesses = updatedProcesses;
+  const handleSaveProcess = async (processId: string, editData: any) => {
+    await updateProcess(processId, editData);
     
-    const updatedProcess = updatedProcesses.find(p => p.id === processId);
+    const updatedProcess = processes.find(p => p.id === processId);
     setSelectedProcess(updatedProcess);
   };
 
   // Calculate statistics
-  const totalProcesses = mockProcesses.length;
-  const overdueProcesses = mockProcesses.filter(p => {
-    const daysDiff = differenceInDays(parseISO(p.dueDate), new Date());
+  const totalProcesses = processes.length;
+  const overdueProcesses = processes.filter(p => {
+    const daysDiff = differenceInDays(parseISO(p.due_date), new Date());
     return daysDiff < 0;
   }).length;
-  const dueSoonProcesses = mockProcesses.filter(p => {
-    const daysDiff = differenceInDays(parseISO(p.dueDate), new Date());
+  const dueSoonProcesses = processes.filter(p => {
+    const daysDiff = differenceInDays(parseISO(p.due_date), new Date());
     return daysDiff >= 0 && daysDiff <= 2;
   }).length;
-  const completedProcesses = mockProcesses.filter(p => 
+  const completedProcesses = processes.filter(p => 
     p.status.toUpperCase() === 'RELATADO'
   ).length;
 
@@ -172,19 +106,19 @@ const Index = () => {
   const getFilteredProcesses = () => {
     switch (filterType) {
       case 'overdue':
-        return mockProcesses.filter(p => {
-          const daysDiff = differenceInDays(parseISO(p.dueDate), new Date());
+        return processes.filter(p => {
+          const daysDiff = differenceInDays(parseISO(p.due_date), new Date());
           return daysDiff < 0;
         });
       case 'dueSoon':
-        return mockProcesses.filter(p => {
-          const daysDiff = differenceInDays(parseISO(p.dueDate), new Date());
+        return processes.filter(p => {
+          const daysDiff = differenceInDays(parseISO(p.due_date), new Date());
           return daysDiff >= 0 && daysDiff <= 2;
         });
       case 'completed':
-        return mockProcesses.filter(p => p.status.toUpperCase() === 'RELATADO');
+        return processes.filter(p => p.status.toUpperCase() === 'RELATADO');
       default:
-        return mockProcesses;
+        return processes;
     }
   };
 
@@ -327,7 +261,12 @@ const Index = () => {
               {filteredProcesses.map((process) => (
                 <ProcessCard
                   key={process.id}
-                  process={process}
+                  process={{
+                    ...process,
+                    dueDate: process.due_date,
+                    pendingActions: process.pending_actions
+                  }}
+                  completedActions={completedActions[process.id] || []}
                   onClick={() => setSelectedProcess(process)}
                 />
               ))}

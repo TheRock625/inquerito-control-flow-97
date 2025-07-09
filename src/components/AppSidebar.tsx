@@ -1,5 +1,6 @@
 import { NavLink, useLocation } from 'react-router-dom';
-import { LayoutDashboard, List, Settings, Home, LogOut, User } from 'lucide-react';
+import { LayoutDashboard, List, Settings, Home, LogOut, User, Menu } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import {
   Sidebar,
   SidebarContent,
@@ -14,6 +15,9 @@ import {
 } from '@/components/ui/sidebar';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+import { useUserProfile } from '@/hooks/useUserProfile';
+import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const menuItems = [
   {
@@ -34,11 +38,34 @@ const menuItems = [
 ];
 
 export function AppSidebar() {
-  const { state } = useSidebar();
+  const { state, toggleSidebar } = useSidebar();
   const location = useLocation();
   const isCollapsed = state === 'collapsed';
   const { user, signOut } = useAuth();
   const { toast } = useToast();
+  const { profile } = useUserProfile();
+  
+  const [sidebarBehavior, setSidebarBehavior] = useState<'manual' | 'auto'>('manual');
+  const [mouseNearEdge, setMouseNearEdge] = useState(false);
+
+  // Auto show/hide sidebar based on mouse position
+  useEffect(() => {
+    if (sidebarBehavior !== 'auto') return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const isNearLeftEdge = e.clientX < 50;
+      setMouseNearEdge(isNearLeftEdge);
+      
+      if (isNearLeftEdge && isCollapsed) {
+        toggleSidebar();
+      } else if (!isNearLeftEdge && !isCollapsed && e.clientX > 250) {
+        toggleSidebar();
+      }
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+    return () => document.removeEventListener('mousemove', handleMouseMove);
+  }, [sidebarBehavior, isCollapsed, toggleSidebar]);
 
   const getNavClassName = (path: string) => {
     const isActive = location.pathname === path;
@@ -47,6 +74,8 @@ export function AppSidebar() {
       : 'hover:bg-gray-100';
   };
 
+  const displayName = profile?.display_name || user?.email || 'Usuário';
+
   return (
     <Sidebar className="border-r">
       <SidebarContent>
@@ -54,6 +83,25 @@ export function AppSidebar() {
           <SidebarGroupLabel className="text-blue-800 font-semibold">
             {!isCollapsed && 'Sistema de Inquéritos'}
           </SidebarGroupLabel>
+          
+          {/* Controles do Sidebar */}
+          {!isCollapsed && (
+            <div className="px-3 py-2 space-y-2">
+              <div className="flex items-center gap-2">
+                <Menu className="w-4 h-4 text-gray-500" />
+                <span className="text-xs text-gray-500">Comportamento do Menu</span>
+              </div>
+              <Select value={sidebarBehavior} onValueChange={(value: 'manual' | 'auto') => setSidebarBehavior(value)}>
+                <SelectTrigger className="h-8 text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="manual">Manual</SelectItem>
+                  <SelectItem value="auto">Automático</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          )}
           <SidebarGroupContent>
             <SidebarMenu>
               {/* Botão de atalho para Dashboard sempre visível */}
@@ -92,7 +140,7 @@ export function AppSidebar() {
               <SidebarMenuItem>
                 <SidebarMenuButton className="cursor-default">
                   <User className="h-4 w-4" />
-                  {!isCollapsed && <span className="text-sm truncate">{user?.email}</span>}
+                  {!isCollapsed && <span className="text-sm truncate">{displayName}</span>}
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>

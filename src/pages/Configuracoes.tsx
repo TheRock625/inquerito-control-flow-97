@@ -1,13 +1,14 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Plus, Trash2, Home, GripVertical } from 'lucide-react';
+import { Plus, Trash2, Home, GripVertical, Lock } from 'lucide-react';
 import { useConfig } from '@/contexts/ConfigContext';
+import { useUserProfile } from '@/hooks/useUserProfile';
 import { Link } from 'react-router-dom';
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 
@@ -30,6 +31,11 @@ const Configuracoes = () => {
   const [newOrigin, setNewOrigin] = useState('');
   const [newStatus, setNewStatus] = useState('');
   const [newForwarding, setNewForwarding] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [displayName, setDisplayName] = useState('');
+  
+  const { profile, updateProfile, changePassword } = useUserProfile();
 
   const handleAddOrigin = () => {
     if (newOrigin.trim()) {
@@ -57,6 +63,34 @@ const Configuracoes = () => {
       handler();
     }
   };
+
+  const handleChangePassword = async () => {
+    if (newPassword !== confirmPassword) {
+      alert('As senhas não coincidem');
+      return;
+    }
+    if (newPassword.length < 6) {
+      alert('A senha deve ter pelo menos 6 caracteres');
+      return;
+    }
+    
+    await changePassword(newPassword);
+    setNewPassword('');
+    setConfirmPassword('');
+  };
+
+  const handleUpdateDisplayName = async () => {
+    if (displayName.trim()) {
+      await updateProfile({ display_name: displayName.trim() });
+    }
+  };
+
+  // Initialize display name when profile loads
+  useEffect(() => {
+    if (profile?.display_name) {
+      setDisplayName(profile.display_name);
+    }
+  }, [profile]);
 
   const handleDragEnd = (result: DropResult) => {
     if (!result.destination) return;
@@ -132,12 +166,77 @@ const Configuracoes = () => {
       </div>
 
       <DragDropContext onDragEnd={handleDragEnd}>
-        <Tabs defaultValue="origins" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
+        <Tabs defaultValue="profile" className="w-full">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="profile">Perfil</TabsTrigger>
             <TabsTrigger value="origins">Origens</TabsTrigger>
             <TabsTrigger value="statuses">Status</TabsTrigger>
             <TabsTrigger value="forwardings">Encaminhamentos</TabsTrigger>
           </TabsList>
+
+          <TabsContent value="profile" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Configurações de Perfil</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Nome de Exibição */}
+                <div className="space-y-2">
+                  <Label htmlFor="displayName">Nome de Exibição</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      id="displayName"
+                      placeholder="Seu nome completo"
+                      value={displayName}
+                      onChange={(e) => setDisplayName(e.target.value)}
+                    />
+                    <Button onClick={handleUpdateDisplayName}>
+                      Salvar
+                    </Button>
+                  </div>
+                </div>
+                
+                {/* Alterar Senha */}
+                <div className="space-y-4 border-t pt-4">
+                  <div className="flex items-center gap-2">
+                    <Lock className="w-4 h-4" />
+                    <h3 className="font-medium">Alterar Senha</h3>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="newPassword">Nova Senha</Label>
+                    <Input
+                      id="newPassword"
+                      type="password"
+                      placeholder="Digite a nova senha"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="confirmPassword">Confirmar Nova Senha</Label>
+                    <Input
+                      id="confirmPassword"
+                      type="password"
+                      placeholder="Confirme a nova senha"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                    />
+                  </div>
+                  
+                  <Button 
+                    onClick={handleChangePassword}
+                    disabled={!newPassword || !confirmPassword}
+                    className="w-full"
+                  >
+                    <Lock className="w-4 h-4 mr-2" />
+                    Alterar Senha
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
           <TabsContent value="origins" className="space-y-4">
             <Card>
