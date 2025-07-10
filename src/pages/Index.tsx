@@ -11,55 +11,6 @@ import { differenceInDays, parseISO } from 'date-fns';
 import { useProcesses } from '@/hooks/useProcesses';
 import { useCompletedActions } from '@/hooks/useCompletedActions';
 
-// Mock data
-const initialMockProcesses = [
-  {
-    id: 1,
-    number: "IP 210/25 - 05ª DP",
-    type: "IP",
-    status: "Em Diligência",
-    dueDate: "2025-01-15",
-    forwarding: "Delta 02",
-    pendingActions: [
-      "Solicitar perícia técnica",
-      "Ouvir testemunha adicional"
-    ],
-    completedActions: []
-  },
-  {
-    id: 2,
-    number: "TC 45/25 - 10ª DP",
-    type: "TC",
-    status: "Aguardando Oitiva",
-    dueDate: "2025-01-08",
-    forwarding: "Delta 01",
-    pendingActions: [
-      "Agendar oitiva do autor"
-    ],
-    completedActions: []
-  },
-  {
-    id: 3,
-    number: "PAAI 12/25 - 15ª DP",
-    type: "PAAI",
-    status: "RELATADO",
-    dueDate: "2025-01-20",
-    forwarding: "Delta 03",
-    pendingActions: [],
-    completedActions: [
-      { action: "Coleta de depoimentos", date: "2025-01-05" },
-      { action: "Análise documental", date: "2025-01-06" }
-    ]
-  }
-];
-
-// Initialize shared data
-if (!(window as any).sharedProcesses) {
-  (window as any).sharedProcesses = initialMockProcesses;
-}
-if (!(window as any).sharedCompletedActions) {
-  (window as any).sharedCompletedActions = {};
-}
 
 const Index = () => {
   const { processes, addProcess, updateProcess, deleteProcess } = useProcesses();

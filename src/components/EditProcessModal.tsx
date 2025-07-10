@@ -10,15 +10,14 @@ import { useConfig } from '@/contexts/ConfigContext';
 import { format } from 'date-fns';
 
 interface Process {
-  id: number;
+  id: string;
   number: string;
   type: string;
   status: string;
-  dueDate: string;
+  due_date: string;
   forwarding: string;
   summary?: string;
-  pendingActions: string[];
-  completedActions: { action: string; date: string; }[];
+  pending_actions: string[];
 }
 
 interface EditProcessModalProps {
@@ -38,10 +37,10 @@ const EditProcessModal = ({ open, onClose, process, onSave }: EditProcessModalPr
     if (process) {
       setFormData({
         status: process.status,
-        dueDate: process.dueDate,
+        due_date: process.due_date,
         forwarding: process.forwarding,
         summary: process.summary || '',
-        pendingActions: [...process.pendingActions]
+        pending_actions: [...process.pending_actions]
       });
     }
   }, [process]);
@@ -52,7 +51,7 @@ const EditProcessModal = ({ open, onClose, process, onSave }: EditProcessModalPr
     const updatedProcess = {
       ...process,
       ...formData,
-      pendingActions: formData.pendingActions || process.pendingActions
+      pending_actions: formData.pending_actions || process.pending_actions
     };
     
     onSave(updatedProcess);
@@ -63,7 +62,7 @@ const EditProcessModal = ({ open, onClose, process, onSave }: EditProcessModalPr
     if (newPendingAction.trim()) {
       setFormData(prev => ({
         ...prev,
-        pendingActions: [...(prev.pendingActions || []), newPendingAction.trim()]
+        pending_actions: [...(prev.pending_actions || []), newPendingAction.trim()]
       }));
       setNewPendingAction('');
     }
@@ -72,7 +71,7 @@ const EditProcessModal = ({ open, onClose, process, onSave }: EditProcessModalPr
   const removePendingAction = (index: number) => {
     setFormData(prev => ({
       ...prev,
-      pendingActions: prev.pendingActions?.filter((_, i) => i !== index) || []
+      pending_actions: prev.pending_actions?.filter((_, i) => i !== index) || []
     }));
   };
 
@@ -105,11 +104,11 @@ const EditProcessModal = ({ open, onClose, process, onSave }: EditProcessModalPr
             </div>
             
             <div>
-              <Label htmlFor="dueDate">Data de Vencimento</Label>
+              <Label htmlFor="due_date">Data de Vencimento</Label>
               <Input
                 type="date"
-                value={formData.dueDate}
-                onChange={(e) => setFormData(prev => ({ ...prev, dueDate: e.target.value }))}
+                value={formData.due_date}
+                onChange={(e) => setFormData(prev => ({ ...prev, due_date: e.target.value }))}
               />
             </div>
           </div>
@@ -142,7 +141,7 @@ const EditProcessModal = ({ open, onClose, process, onSave }: EditProcessModalPr
           <div>
             <Label>Providências Pendentes</Label>
             <div className="space-y-2">
-              {formData.pendingActions?.map((action, index) => (
+              {formData.pending_actions?.map((action, index) => (
                 <div key={index} className="flex items-center justify-between p-2 bg-orange-50 rounded border">
                   <span className="text-sm">{action}</span>
                   <Button 

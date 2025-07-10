@@ -1,6 +1,6 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { AlertTriangle, Clock, Check, Calendar, ListTodo } from 'lucide-react';
+import { AlertTriangle, Clock, Check, Calendar, ListTodo, Edit } from 'lucide-react';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 import { cn } from '@/lib/utils';
 import { format, parseISO, differenceInDays, getDay } from 'date-fns';
@@ -52,11 +52,13 @@ interface ProcessCardProps {
   process: any;
   onClick: () => void;
   completedActions?: string[];
+  onEdit?: () => void;
 }
 const ProcessCard = ({
   process,
   onClick,
-  completedActions = []
+  completedActions = [],
+  onEdit
 }: ProcessCardProps) => {
   const alertLevel = getAlertLevel(process.dueDate);
   const isWeekendDate = isWeekend(process.dueDate);
@@ -158,9 +160,29 @@ const ProcessCard = ({
 
         {/* Botões de ação */}
         <div className="flex gap-2 pt-2">
-          <Button variant="outline" size="sm" className="flex-1">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="flex-1"
+            onClick={(e) => {
+              e.stopPropagation();
+              onClick();
+            }}
+          >
             Detalhes
           </Button>
+          {onEdit && (
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={(e) => {
+                e.stopPropagation();
+                onEdit();
+              }}
+            >
+              <Edit className="w-4 h-4" />
+            </Button>
+          )}
           <Badge className={getForwardingColor(process.forwarding)} variant="secondary">
             {process.forwarding}
           </Badge>
