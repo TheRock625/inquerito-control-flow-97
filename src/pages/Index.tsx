@@ -36,7 +36,13 @@ const Index = () => {
     await updateProcess(processId, editData);
     
     const updatedProcess = processes.find(p => p.id === processId);
-    setSelectedProcess(updatedProcess);
+    if (updatedProcess) {
+      setSelectedProcess({
+        ...updatedProcess,
+        dueDate: updatedProcess.due_date,
+        pendingActions: updatedProcess.pending_actions || []
+      });
+    }
   };
 
   // Calculate statistics
@@ -218,7 +224,11 @@ const Index = () => {
                     pendingActions: process.pending_actions
                   }}
                   completedActions={completedActions[process.id] || []}
-                  onClick={() => setSelectedProcess(process)}
+                  onClick={() => setSelectedProcess({
+                    ...process,
+                    dueDate: process.due_date,
+                    pendingActions: process.pending_actions || []
+                  })}
                 />
               ))}
             </div>

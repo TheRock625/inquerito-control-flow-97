@@ -54,7 +54,13 @@ const Processos = () => {
     
     // Update selected process for modal
     const updatedProcess = processes.find(p => p.id === processId);
-    setSelectedProcess(updatedProcess);
+    if (updatedProcess) {
+      setSelectedProcess({
+        ...updatedProcess,
+        dueDate: updatedProcess.due_date,
+        pendingActions: updatedProcess.pending_actions || []
+      });
+    }
   };
 
   const clearFilters = () => {
@@ -169,8 +175,16 @@ const Processos = () => {
                   pendingActions: process.pending_actions
                 }}
                 completedActions={completedActions[process.id] || []}
-                onClick={() => setSelectedProcess(process)}
-                onEdit={() => setEditingProcess(process)}
+                onClick={() => setSelectedProcess({
+                  ...process,
+                  dueDate: process.due_date,
+                  pendingActions: process.pending_actions || []
+                })}
+                onEdit={() => setEditingProcess({
+                  ...process,
+                  dueDate: process.due_date,
+                  pendingActions: process.pending_actions || []
+                })}
               />
             ))}
           </div>
