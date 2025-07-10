@@ -13,11 +13,16 @@ import {
   SidebarSeparator,
   useSidebar,
 } from '@/components/ui/sidebar';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { useUserProfile } from '@/hooks/useUserProfile';
 import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const menuItems = [
   {
@@ -87,19 +92,32 @@ export function AppSidebar() {
           {/* Controles do Sidebar */}
           {!isCollapsed && (
             <div className="px-3 py-2 space-y-2">
-              <div className="flex items-center gap-2">
-                <Menu className="w-4 h-4 text-gray-500" />
-                <span className="text-xs text-gray-500">Comportamento do Menu</span>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-gray-500">Comportamento do Menu</span>
+                </div>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                      <Menu className="h-4 w-4 text-gray-500" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem 
+                      onClick={() => setSidebarBehavior('manual')}
+                      className={sidebarBehavior === 'manual' ? 'bg-accent' : ''}
+                    >
+                      Manual
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      onClick={() => setSidebarBehavior('auto')}
+                      className={sidebarBehavior === 'auto' ? 'bg-accent' : ''}
+                    >
+                      Automático
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
-              <Select value={sidebarBehavior} onValueChange={(value: 'manual' | 'auto') => setSidebarBehavior(value)}>
-                <SelectTrigger className="h-8 text-xs">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="manual">Manual</SelectItem>
-                  <SelectItem value="auto">Automático</SelectItem>
-                </SelectContent>
-              </Select>
             </div>
           )}
           <SidebarGroupContent>
