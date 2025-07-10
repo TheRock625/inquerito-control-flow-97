@@ -101,33 +101,19 @@ const ProcessDetailsModal = ({
   };
 
   const handleAddPendingAction = () => {
-    console.log('handleAddPendingAction called');
-    console.log('newPendingAction value:', newPendingAction);
     const newAction = newPendingAction.trim();
-    console.log('trimmed newAction:', newAction);
-    if (!newAction) {
-      console.log('Empty action, returning');
-      return;
-    }
+    if (!newAction) return;
 
-    console.log('Current editingData.pending_actions:', editingData.pending_actions);
-    setEditingData(prev => {
-      const updated = {
-        ...prev,
-        pending_actions: [...(prev.pending_actions || []), newAction]
-      };
-      console.log('Updated editingData:', updated);
-      return updated;
-    });
+    setEditingData(prev => ({
+      ...prev,
+      pending_actions: [...(prev.pending_actions || []), newAction]
+    }));
     setNewPendingAction('');
-    console.log('Reset newPendingAction to empty');
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    console.log('Key pressed:', e.key);
     if (e.key === 'Enter') {
       e.preventDefault();
-      console.log('Enter pressed, calling handleAddPendingAction');
       handleAddPendingAction();
     }
   };
@@ -139,7 +125,12 @@ const ProcessDetailsModal = ({
     }));
   };
 
-  const currentProcess = isEditMode ? { ...process, ...editingData } : process;
+  const currentProcess = isEditMode ? { 
+    ...process, 
+    ...editingData,
+    // Garantir compatibilidade entre snake_case e camelCase
+    pendingActions: editingData.pending_actions || process.pendingActions || []
+  } : process;
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
