@@ -49,7 +49,7 @@ const Index = () => {
   const totalProcesses = processes.length;
   const overdueProcesses = processes.filter(p => {
     const daysDiff = differenceInDays(parseISO(p.due_date), new Date());
-    return daysDiff < 0;
+    return daysDiff < 0 && p.forwarding !== 'TJDFT' && p.forwarding !== 'MPDFT';
   }).length;
   const dueSoonProcesses = processes.filter(p => {
     const daysDiff = differenceInDays(parseISO(p.due_date), new Date());
@@ -65,7 +65,7 @@ const Index = () => {
       case 'overdue':
         return processes.filter(p => {
           const daysDiff = differenceInDays(parseISO(p.due_date), new Date());
-          return daysDiff < 0;
+          return daysDiff < 0 && p.forwarding !== 'TJDFT' && p.forwarding !== 'MPDFT';
         });
       case 'dueSoon':
         return processes.filter(p => {
