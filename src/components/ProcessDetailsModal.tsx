@@ -80,9 +80,9 @@ const ProcessDetailsModal = ({
     setIsEditMode(true);
     setEditingData({
       status: process.status,
-      dueDate: process.dueDate,
+      due_date: process.dueDate,
       forwarding: process.forwarding,
-      pendingActions: [...(process.pendingActions || [])],
+      pending_actions: [...(process.pendingActions || [])],
       summary: process.summary || ''
     });
     setNewPendingAction('');
@@ -106,7 +106,7 @@ const ProcessDetailsModal = ({
 
     setEditingData(prev => ({
       ...prev,
-      pendingActions: [...(prev.pendingActions || []), newAction]
+      pending_actions: [...(prev.pending_actions || []), newAction]
     }));
     setNewPendingAction('');
   };
@@ -114,7 +114,7 @@ const ProcessDetailsModal = ({
   const handleRemovePendingAction = (actionIndex: number) => {
     setEditingData(prev => ({
       ...prev,
-      pendingActions: prev.pendingActions?.filter((_, i) => i !== actionIndex) || []
+      pending_actions: prev.pending_actions?.filter((_, i) => i !== actionIndex) || []
     }));
   };
 
@@ -193,8 +193,8 @@ const ProcessDetailsModal = ({
                     {isEditMode ? (
                       <Input
                         type="date"
-                        value={editingData.dueDate}
-                        onChange={(e) => setEditingData(prev => ({ ...prev, dueDate: e.target.value }))}
+                        value={editingData.due_date}
+                        onChange={(e) => setEditingData(prev => ({ ...prev, due_date: e.target.value }))}
                         className="mt-1"
                       />
                     ) : (
@@ -288,7 +288,7 @@ const ProcessDetailsModal = ({
                       
                       {isEditMode && (
                         <div className="flex gap-2 mt-3">
-                          <Input
+                           <Input
                             placeholder="Nova providência..."
                             value={newPendingAction}
                             onChange={(e) => setNewPendingAction(e.target.value)}
