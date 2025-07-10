@@ -55,8 +55,10 @@ const Processos = () => {
     if (updatedProcessData) {
       setSelectedProcess({
         ...updatedProcessData,
-        dueDate: updatedProcessData.dueDate || updatedProcessData.due_date,
-        pendingActions: updatedProcessData.pendingActions || updatedProcessData.pending_actions || []
+        dueDate: updatedProcessData.due_date,
+        pendingActions: Array.isArray(updatedProcessData.pending_actions) 
+          ? updatedProcessData.pending_actions.filter((item: any) => typeof item === 'string') 
+          : []
       });
     }
   };
