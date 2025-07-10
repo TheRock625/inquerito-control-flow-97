@@ -77,10 +77,10 @@ const ProcessInfoCard = ({ process, isEditMode, editingData, onUpdateEditingData
             />
           ) : (
             <div className="flex items-center gap-2">
-              {shouldShowAlert(process.dueDate) && (
+              {shouldShowAlert(process.dueDate || process.due_date) && (
                 <div className="relative group">
                   <AlertTriangle className="w-4 h-4 text-yellow-500" />
-                  {isWeekend(process.dueDate) && (
+                  {isWeekend(process.dueDate || process.due_date) && (
                     <div className="absolute bottom-6 left-0 hidden group-hover:block">
                       <div className="bg-yellow-100 border border-yellow-300 rounded-lg p-2 shadow-lg whitespace-nowrap">
                         <div className="flex items-center gap-2">
@@ -92,8 +92,8 @@ const ProcessInfoCard = ({ process, isEditMode, editingData, onUpdateEditingData
                   )}
                 </div>
               )}
-              <p className={cn("text-lg font-bold", getDueDateColor(process.dueDate))}>
-                {formatDueDate(process.dueDate)}
+              <p className={cn("text-lg font-bold", getDueDateColor(process.dueDate || process.due_date))}>
+                {formatDueDate(process.dueDate || process.due_date)}
               </p>
             </div>
           )}

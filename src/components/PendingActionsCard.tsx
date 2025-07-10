@@ -32,9 +32,9 @@ const PendingActionsCard = ({
         <CardTitle className="text-lg">Providências Pendentes</CardTitle>
       </CardHeader>
       <CardContent>
-        {(process.pendingActions || []).length > 0 ? (
+        {(process.pendingActions || process.pending_actions || []).length > 0 ? (
           <div className="space-y-2">
-            {(process.pendingActions || []).map((action: string, index: number) => {
+            {(process.pendingActions || process.pending_actions || []).map((action: string, index: number) => {
               const isCompleted = completedActions?.includes(action);
               return (
                 <div key={index} className={cn(
