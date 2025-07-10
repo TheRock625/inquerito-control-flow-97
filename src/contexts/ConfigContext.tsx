@@ -1,5 +1,7 @@
 
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import { secureStorage } from '@/lib/secureStorage';
+import { configItemSchema, validateAndSanitize } from '@/lib/validation';
 
 interface ConfigContextType {
   origins: string[];
@@ -41,87 +43,124 @@ const defaultForwardings = [
   'RELATADO'
 ];
 
-// Global shared data
-if (!(window as any).sharedProcesses) {
-  (window as any).sharedProcesses = [
-    {
-      id: 1,
-      number: "IP 123/24 - 12ª DP",
-      type: "IP",
-      status: "Aguardando Oitiva",
-      dueDate: "2024-07-07",
-      forwarding: "Em Andamento",
-      pendingActions: ["Ouvir testemunha João Silva", "Solicitar exame pericial"],
-      completedActions: [
-        { action: "Abertura do IP", date: "2024-06-15" },
-        { action: "Coleta inicial de depoimentos", date: "2024-06-20" }
-      ]
-    },
-    {
-      id: 2,
-      number: "TC 89/24 - 05ª DP",
-      type: "TC",
-      status: "Em Diligência",
-      dueDate: "2024-07-06",
-      forwarding: "MPDFT",
-      pendingActions: ["Notificar envolvidos", "Juntar documentos"],
-      completedActions: [
-        { action: "Registro da ocorrência", date: "2024-05-10" },
-        { action: "Oitiva das partes", date: "2024-05-15" }
-      ]
-    },
-    {
-      id: 3,
-      number: "IP 67/24 - 18ª DP",
-      type: "IP",
-      status: "RELATADO",
-      dueDate: "2024-07-08",
-      forwarding: "RELATADO",
-      pendingActions: [],
-      completedActions: [
-        { action: "Investigação completa", date: "2024-06-01" },
-        { action: "Conclusão das diligências", date: "2024-06-25" }
-      ]
-    },
-    {
-      id: 4,
-      number: "PAAI 201/25 - 24ª DP",
-      type: "PAAI",
-      status: "Aguardando Perícia",
-      dueDate: "2024-07-04",
-      forwarding: "Delta 01",
-      pendingActions: ["Aguardar resultado da perícia", "Complementar auto"],
-      completedActions: [
-        { action: "Solicitação de perícia", date: "2024-06-10" }
-      ]
-    }
-  ];
-}
+// Secure storage keys
+const STORAGE_KEYS = {
+  PROCESSES: 'demo_processes',
+  COMPLETED_ACTIONS: 'demo_completed_actions',
+  CONFIG_ORIGINS: 'config_origins',
+  CONFIG_STATUSES: 'config_statuses', 
+  CONFIG_FORWARDINGS: 'config_forwardings'
+};
 
-if (!(window as any).sharedCompletedActions) {
-  (window as any).sharedCompletedActions = {};
-}
+// Initialize demo data securely
+const initializeDemoData = () => {
+  const existingProcesses = secureStorage.getItem(STORAGE_KEYS.PROCESSES, []);
+  
+  if (existingProcesses.length === 0) {
+    const demoProcesses = [
+      {
+        id: 1,
+        number: "IP 123/24 - 12ª DP",
+        type: "IP",
+        status: "Aguardando Oitiva",
+        dueDate: "2024-07-07",
+        forwarding: "Em Andamento",
+        pendingActions: ["Ouvir testemunha João Silva", "Solicitar exame pericial"],
+        completedActions: [
+          { action: "Abertura do IP", date: "2024-06-15" },
+          { action: "Coleta inicial de depoimentos", date: "2024-06-20" }
+        ]
+      },
+      {
+        id: 2,
+        number: "TC 89/24 - 05ª DP",
+        type: "TC",
+        status: "Em Diligência",
+        dueDate: "2024-07-06",
+        forwarding: "MPDFT",
+        pendingActions: ["Notificar envolvidos", "Juntar documentos"],
+        completedActions: [
+          { action: "Registro da ocorrência", date: "2024-05-10" },
+          { action: "Oitiva das partes", date: "2024-05-15" }
+        ]
+      },
+      {
+        id: 3,
+        number: "IP 67/24 - 18ª DP",
+        type: "IP",
+        status: "RELATADO",
+        dueDate: "2024-07-08",
+        forwarding: "RELATADO",
+        pendingActions: [],
+        completedActions: [
+          { action: "Investigação completa", date: "2024-06-01" },
+          { action: "Conclusão das diligências", date: "2024-06-25" }
+        ]
+      },
+      {
+        id: 4,
+        number: "PAAI 201/25 - 24ª DP",
+        type: "PAAI",
+        status: "Aguardando Perícia",
+        dueDate: "2024-07-04",
+        forwarding: "Delta 01",
+        pendingActions: ["Aguardar resultado da perícia", "Complementar auto"],
+        completedActions: [
+          { action: "Solicitação de perícia", date: "2024-06-10" }
+        ]
+      }
+    ];
+    
+    secureStorage.setItem(STORAGE_KEYS.PROCESSES, demoProcesses);
+    secureStorage.setItem(STORAGE_KEYS.COMPLETED_ACTIONS, {});
+  }
+};
+
+// Initialize demo data
+initializeDemoData();
 
 export const ConfigProvider = ({ children }: { children: ReactNode }) => {
-  const [origins, setOrigins] = useState<string[]>(defaultOrigins);
-  const [statuses, setStatuses] = useState<string[]>(defaultStatuses);
-  const [forwardings, setForwardings] = useState<string[]>(defaultForwardings);
+  const [origins, setOrigins] = useState<string[]>(() => 
+    secureStorage.getItem(STORAGE_KEYS.CONFIG_ORIGINS, defaultOrigins)
+  );
+  const [statuses, setStatuses] = useState<string[]>(() => 
+    secureStorage.getItem(STORAGE_KEYS.CONFIG_STATUSES, defaultStatuses)
+  );
+  const [forwardings, setForwardings] = useState<string[]>(() => 
+    secureStorage.getItem(STORAGE_KEYS.CONFIG_FORWARDINGS, defaultForwardings)
+  );
+
+  // Save to secure storage when state changes
+  useEffect(() => {
+    secureStorage.setItem(STORAGE_KEYS.CONFIG_ORIGINS, origins);
+  }, [origins]);
+
+  useEffect(() => {
+    secureStorage.setItem(STORAGE_KEYS.CONFIG_STATUSES, statuses);
+  }, [statuses]);
+
+  useEffect(() => {
+    secureStorage.setItem(STORAGE_KEYS.CONFIG_FORWARDINGS, forwardings);
+  }, [forwardings]);
 
   const addOrigin = (origin: string) => {
-    if (!origins.includes(origin)) {
-      setOrigins(prev => [...prev, origin]);
+    const validation = validateAndSanitize(configItemSchema, origin);
+    if (validation.success && !origins.includes(validation.data)) {
+      setOrigins(prev => [...prev, validation.data]);
     }
   };
 
   const addStatus = (status: string) => {
-    if (!statuses.includes(status)) {
-      setStatuses(prev => [...prev, status]);
+    const validation = validateAndSanitize(configItemSchema, status);
+    if (validation.success && !statuses.includes(validation.data)) {
+      setStatuses(prev => [...prev, validation.data]);
     }
   };
 
   const addForwarding = (forwarding: string) => {
-    if (!forwardings.includes(forwarding)) {
-      setForwardings(prev => [...prev, forwarding]);
+    const validation = validateAndSanitize(configItemSchema, forwarding);
+    if (validation.success && !forwardings.includes(validation.data)) {
+      setForwardings(prev => [...prev, validation.data]);
     }
   };
 

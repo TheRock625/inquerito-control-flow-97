@@ -80,18 +80,30 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       // Then attempt to sign out from Supabase
       const { error } = await supabase.auth.signOut({ scope: 'local' });
       
-      // Even if there's an error, we've already cleared local state
-      // This prevents the "session not found" error from blocking logout
       if (error) {
-        console.warn('Logout warning:', error.message);
-        // Don't throw the error, just log it as the user is effectively logged out
+        // Log security-relevant errors properly
+        console.error('Logout error:', {
+          message: error.message,
+          timestamp: new Date().toISOString(),
+          userId: user?.id
+        });
+        
+        // Only return error for serious security issues
+        if (error.message.includes('network') || error.message.includes('server')) {
+          return { error };
+        }
       }
       
       return { error: null };
     } catch (error: any) {
-      console.warn('Logout warning:', error.message);
-      // Even on catch, user is logged out locally
-      return { error: null };
+      console.error('Logout critical error:', {
+        message: error.message,
+        timestamp: new Date().toISOString(),
+        userId: user?.id
+      });
+      
+      // For critical errors, still log out locally but return error
+      return { error };
     }
   };
 

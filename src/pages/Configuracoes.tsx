@@ -69,8 +69,15 @@ const Configuracoes = () => {
       alert('As senhas não coincidem');
       return;
     }
-    if (newPassword.length < 6) {
-      alert('A senha deve ter pelo menos 6 caracteres');
+    
+    // Enhanced password validation
+    if (newPassword.length < 8) {
+      alert('A senha deve ter pelo menos 8 caracteres');
+      return;
+    }
+    
+    if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(newPassword)) {
+      alert('A senha deve conter pelo menos 1 letra minúscula, 1 maiúscula e 1 número');
       return;
     }
     
@@ -80,9 +87,25 @@ const Configuracoes = () => {
   };
 
   const handleUpdateDisplayName = async () => {
-    if (displayName.trim()) {
-      await updateProfile({ display_name: displayName.trim() });
+    const trimmedName = displayName.trim();
+    
+    // Enhanced validation
+    if (trimmedName.length < 2) {
+      alert('Nome deve ter pelo menos 2 caracteres');
+      return;
     }
+    
+    if (trimmedName.length > 100) {
+      alert('Nome deve ter no máximo 100 caracteres');
+      return;
+    }
+    
+    if (!/^[a-zA-ZÀ-ÿ\s]+$/.test(trimmedName)) {
+      alert('Nome deve conter apenas letras e espaços');
+      return;
+    }
+    
+    await updateProfile({ display_name: trimmedName });
   };
 
   // Initialize display name when profile loads
@@ -208,10 +231,13 @@ const Configuracoes = () => {
                     <Input
                       id="newPassword"
                       type="password"
-                      placeholder="Digite a nova senha"
+                      placeholder="Mín. 8 caracteres, 1 maiúscula, 1 minúscula, 1 número"
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
                     />
+                    <p className="text-xs text-muted-foreground">
+                      A senha deve ter pelo menos 8 caracteres, incluindo 1 letra maiúscula, 1 minúscula e 1 número
+                    </p>
                   </div>
                   
                   <div className="space-y-2">
