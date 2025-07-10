@@ -111,6 +111,13 @@ const ProcessDetailsModal = ({
     setNewPendingAction('');
   };
 
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleAddPendingAction();
+    }
+  };
+
   const handleRemovePendingAction = (actionIndex: number) => {
     setEditingData(prev => ({
       ...prev,
@@ -292,7 +299,7 @@ const ProcessDetailsModal = ({
                             placeholder="Nova providência..."
                             value={newPendingAction}
                             onChange={(e) => setNewPendingAction(e.target.value)}
-                            onKeyPress={(e) => e.key === 'Enter' && handleAddPendingAction()}
+                            onKeyPress={handleKeyPress}
                           />
                           <Button onClick={handleAddPendingAction}>Adicionar</Button>
                         </div>
@@ -309,7 +316,7 @@ const ProcessDetailsModal = ({
                             placeholder="Nova providência..."
                             value={newPendingAction}
                             onChange={(e) => setNewPendingAction(e.target.value)}
-                            onKeyPress={(e) => e.key === 'Enter' && handleAddPendingAction()}
+                            onKeyPress={handleKeyPress}
                           />
                           <Button onClick={handleAddPendingAction}>Adicionar</Button>
                         </div>
