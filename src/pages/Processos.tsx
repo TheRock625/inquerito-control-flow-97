@@ -83,7 +83,10 @@ const Processos = () => {
       })
       .sort((a, b) => {
         if (sortBy === 'dueDate') {
-          return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
+          const dateA = a.dueDate || a.due_date;
+          const dateB = b.dueDate || b.due_date;
+          if (!dateA || !dateB) return 0;
+          return new Date(dateA).getTime() - new Date(dateB).getTime();
         }
         if (sortBy === 'number') {
           return a.number.localeCompare(b.number);
@@ -171,19 +174,19 @@ const Processos = () => {
                 key={process.id}
                 process={{
                   ...process,
-                  dueDate: process.dueDate,
-                  pendingActions: process.pendingActions
+                  dueDate: process.dueDate || process.due_date,
+                  pendingActions: process.pendingActions || process.pending_actions || []
                 }}
                 completedActions={completedActions[process.id] || []}
                 onClick={() => setSelectedProcess({
                   ...process,
-                  dueDate: process.dueDate,
-                  pendingActions: process.pendingActions || []
+                  dueDate: process.dueDate || process.due_date,
+                  pendingActions: process.pendingActions || process.pending_actions || []
                 })}
                 onEdit={() => setEditingProcess({
                   ...process,
-                  dueDate: process.dueDate,
-                  pendingActions: process.pendingActions || []
+                  dueDate: process.dueDate || process.due_date,
+                  pendingActions: process.pendingActions || process.pending_actions || []
                 })}
               />
             ))}

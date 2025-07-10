@@ -218,17 +218,17 @@ const Index = () => {
               {filteredProcesses.map((process) => (
                 <ProcessCard
                   key={process.id}
-                  process={{
-                    ...process,
-                    dueDate: process.due_date,
-                    pendingActions: process.pending_actions
-                  }}
+                    process={{
+                      ...process,
+                      dueDate: process.dueDate || process.due_date,
+                      pendingActions: process.pendingActions || process.pending_actions || []
+                    }}
                   completedActions={completedActions[process.id] || []}
-                  onClick={() => setSelectedProcess({
-                    ...process,
-                    dueDate: process.due_date,
-                    pendingActions: process.pending_actions || []
-                  })}
+                    onClick={() => setSelectedProcess({
+                      ...process,
+                      dueDate: process.dueDate || process.due_date,
+                      pendingActions: process.pendingActions || process.pending_actions || []
+                    })}
                 />
               ))}
             </div>
