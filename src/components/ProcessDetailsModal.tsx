@@ -375,17 +375,23 @@ const ProcessDetailsModal = ({
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {(currentProcess.completedActions || []).map((item, index) => (
-                    <div key={index} className="flex items-start gap-3 p-3 bg-green-50 rounded-lg border-l-4 border-green-400">
-                      <div className="w-2 h-2 bg-green-600 rounded-full mt-2"></div>
-                      <div className="flex-1">
-                        <p className="font-medium">{item.action}</p>
-                        <p className="text-sm text-gray-600">
-                          {format(parseISO(item.date), "dd/MM/yyyy", { locale: ptBR })}
-                        </p>
+                  {(completedActions[currentProcess.id] || []).length > 0 ? (
+                    (completedActions[currentProcess.id] || []).map((actionText, index) => (
+                      <div key={index} className="flex items-start gap-3 p-3 bg-green-50 rounded-lg border-l-4 border-green-400">
+                        <div className="w-2 h-2 bg-green-600 rounded-full mt-2"></div>
+                        <div className="flex-1">
+                          <p className="font-medium">{actionText}</p>
+                          <p className="text-sm text-gray-600">
+                            Concluída
+                          </p>
+                        </div>
                       </div>
+                    ))
+                  ) : (
+                    <div className="text-center text-gray-500 py-8">
+                      <p>Nenhuma providência foi concluída ainda</p>
                     </div>
-                  ))}
+                  )}
                 </div>
               </CardContent>
             </Card>
