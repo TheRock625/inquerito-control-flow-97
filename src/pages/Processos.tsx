@@ -1,4 +1,3 @@
-
 import { useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -50,15 +49,14 @@ const Processos = () => {
   };
 
   const handleSaveProcess = async (processId: string, editData: any) => {
-    await updateProcess(processId, editData);
+    const updatedProcessData = await updateProcess(processId, editData);
     
-    // Update selected process for modal
-    const updatedProcess = processes.find(p => p.id === processId);
-    if (updatedProcess) {
+    // Use os dados retornados diretamente para atualizar o selectedProcess
+    if (updatedProcessData) {
       setSelectedProcess({
-        ...updatedProcess,
-        dueDate: updatedProcess.dueDate,
-        pendingActions: updatedProcess.pendingActions || []
+        ...updatedProcessData,
+        dueDate: updatedProcessData.dueDate || updatedProcessData.due_date,
+        pendingActions: updatedProcessData.pendingActions || updatedProcessData.pending_actions || []
       });
     }
   };
