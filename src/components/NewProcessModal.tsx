@@ -51,15 +51,13 @@ const NewProcessModal = ({ open, onClose, onSave }: NewProcessModalProps) => {
     const formattedNumber = formatProcessNumber(formData.number, formData.year, formData.type, formData.origin);
 
     const newProcess = {
-      id: Date.now(),
       number: formattedNumber,
       type: formData.type,
       status: formData.status,
-      dueDate: formData.dueDate,
+      due_date: formData.dueDate,
       forwarding: formData.forwarding,
       summary: formData.summary,
-      pendingActions: formData.pendingActions,
-      completedActions: []
+      pending_actions: formData.pendingActions
     };
 
     onSave(newProcess);
