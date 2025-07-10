@@ -13,13 +13,13 @@ import { Link } from 'react-router-dom';
 // Access shared data from Index.tsx
 declare global {
   var sharedProcesses: any[];
-  var sharedCompletedActions: {[key: number]: number[]};
+  var sharedCompletedActions: {[processId: string]: string[]};
 }
 
 const Processos = () => {
   // Access shared data from window
   const [mockProcesses, setMockProcesses] = useState(() => (window as any).sharedProcesses || []);
-  const [completedActions, setCompletedActions] = useState<{[key: number]: number[]}>(() => (window as any).sharedCompletedActions || {});
+  const [completedActions, setCompletedActions] = useState<{[processId: string]: string[]}>(() => (window as any).sharedCompletedActions || {});
   
   const [searchTerm, setSearchTerm] = useState('');
   const [typeFilter, setTypeFilter] = useState('all');
@@ -51,25 +51,24 @@ const Processos = () => {
     (window as any).sharedProcesses = updatedProcesses;
   };
 
-  const handleDeleteProcess = (processId: number) => {
+  const handleDeleteProcess = (processId: string) => {
     const updatedProcesses = mockProcesses.filter(p => p.id !== processId);
     setMockProcesses(updatedProcesses);
     (window as any).sharedProcesses = updatedProcesses;
     setSelectedProcess(null);
   };
 
-  const handleCompleteAction = (processId: number, actionIndex: number) => {
+  const handleCompleteAction = (processId: string, actionText: string) => {
     const process = mockProcesses.find(p => p.id === processId);
     if (!process) return;
 
-    const action = process.pendingActions[actionIndex];
-    const isCurrentlyCompleted = completedActions[processId]?.includes(actionIndex);
+    const isCurrentlyCompleted = completedActions[processId]?.includes(actionText);
     
     const newCompletedActions = {
       ...completedActions,
       [processId]: isCurrentlyCompleted 
-        ? completedActions[processId].filter(idx => idx !== actionIndex)
-        : [...(completedActions[processId] || []), actionIndex]
+        ? completedActions[processId].filter(action => action !== actionText)
+        : [...(completedActions[processId] || []), actionText]
     };
     setCompletedActions(newCompletedActions);
     (window as any).sharedCompletedActions = newCompletedActions;
@@ -82,12 +81,12 @@ const Processos = () => {
         if (isCurrentlyCompleted) {
           // Remover do histórico
           newCompletedActionsHistory = newCompletedActionsHistory.filter(
-            item => !(item.action === action && item.date === new Date().toISOString().split('T')[0])
+            item => !(item.action === actionText && item.date === new Date().toISOString().split('T')[0])
           );
         } else {
           // Adicionar ao histórico
           newCompletedActionsHistory.push({
-            action: action,
+            action: actionText,
             date: new Date().toISOString().split('T')[0]
           });
         }
@@ -104,7 +103,7 @@ const Processos = () => {
     (window as any).sharedProcesses = updatedProcesses;
   };
 
-  const handleSaveProcess = (processId: number, editData: any) => {
+  const handleSaveProcess = (processId: string, editData: any) => {
     const updatedProcesses = mockProcesses.map(p => {
       if (p.id === processId) {
         return {

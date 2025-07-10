@@ -54,10 +54,10 @@ interface ProcessDetailsModalProps {
   process: any;
   open: boolean;
   onClose: () => void;
-  completedActions: { [key: number]: number[] };
-  onCompleteAction: (processId: number, actionIndex: number) => void;
-  onDeleteProcess: (processId: number) => void;
-  onSaveProcess: (processId: number, editData: any) => void;
+  completedActions: { [processId: string]: string[] };
+  onCompleteAction: (processId: string, actionText: string) => void;
+  onDeleteProcess: (processId: string) => void;
+  onSaveProcess: (processId: string, editData: any) => void;
 }
 
 const ProcessDetailsModal = ({
@@ -253,7 +253,7 @@ const ProcessDetailsModal = ({
                   {currentProcess.pendingActions.length > 0 ? (
                     <div className="space-y-2">
                       {currentProcess.pendingActions.map((action, index) => {
-                        const isCompleted = completedActions[currentProcess.id]?.includes(index);
+                        const isCompleted = completedActions[currentProcess.id]?.includes(action);
                         return (
                           <div key={index} className={cn(
                             "flex items-center justify-between p-2 rounded border-l-4",
@@ -277,7 +277,7 @@ const ProcessDetailsModal = ({
                               <Button 
                                 size="sm" 
                                 variant="outline"
-                                onClick={() => onCompleteAction(currentProcess.id, index)}
+                                onClick={() => onCompleteAction(currentProcess.id, action)}
                               >
                                 {isCompleted ? 'Reativar' : 'Dar Baixa'}
                               </Button>
