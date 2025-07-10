@@ -82,7 +82,7 @@ const ProcessDetailsModal = ({
       status: process.status,
       dueDate: process.dueDate,
       forwarding: process.forwarding,
-      pendingActions: [...process.pendingActions],
+      pendingActions: [...(process.pendingActions || [])],
       summary: process.summary || ''
     });
     setNewPendingAction('');
@@ -177,7 +177,7 @@ const ProcessDetailsModal = ({
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          {statuses.map((status) => (
+                          {(statuses || []).map((status) => (
                             <SelectItem key={status} value={status}>{status}</SelectItem>
                           ))}
                         </SelectContent>
@@ -231,7 +231,7 @@ const ProcessDetailsModal = ({
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          {forwardings.map((forwarding) => (
+                          {(forwardings || []).map((forwarding) => (
                             <SelectItem key={forwarding} value={forwarding}>{forwarding}</SelectItem>
                           ))}
                         </SelectContent>
@@ -250,9 +250,9 @@ const ProcessDetailsModal = ({
                   <CardTitle className="text-lg">Providências Pendentes</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {currentProcess.pendingActions.length > 0 ? (
+                  {(currentProcess.pendingActions || []).length > 0 ? (
                     <div className="space-y-2">
-                      {currentProcess.pendingActions.map((action, index) => {
+                      {(currentProcess.pendingActions || []).map((action, index) => {
                         const isCompleted = completedActions[currentProcess.id]?.includes(action);
                         return (
                           <div key={index} className={cn(
@@ -375,7 +375,7 @@ const ProcessDetailsModal = ({
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {currentProcess.completedActions.map((item, index) => (
+                  {(currentProcess.completedActions || []).map((item, index) => (
                     <div key={index} className="flex items-start gap-3 p-3 bg-green-50 rounded-lg border-l-4 border-green-400">
                       <div className="w-2 h-2 bg-green-600 rounded-full mt-2"></div>
                       <div className="flex-1">
