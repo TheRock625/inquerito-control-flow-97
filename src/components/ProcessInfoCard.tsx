@@ -16,6 +16,7 @@ interface ProcessInfoCardProps {
 }
 
 const ProcessInfoCard = ({ process, isEditMode, editingData, onUpdateEditingData }: ProcessInfoCardProps) => {
+  console.log('ProcessInfoCard render - process:', process);
   const { statuses, forwardings } = useConfig();
 
   return (

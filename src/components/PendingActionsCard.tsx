@@ -26,6 +26,7 @@ const PendingActionsCard = ({
   onCompleteAction,
   onKeyPress
 }: PendingActionsCardProps) => {
+  console.log('PendingActionsCard render - process:', process);
   return (
     <Card>
       <CardHeader>

@@ -224,11 +224,16 @@ const Index = () => {
                       pendingActions: process.pendingActions || process.pending_actions || []
                     }}
                   completedActions={completedActions[process.id] || []}
-                    onClick={() => setSelectedProcess({
-                      ...process,
-                      dueDate: process.dueDate || process.due_date,
-                      pendingActions: process.pendingActions || process.pending_actions || []
-                    })}
+                    onClick={() => {
+                      console.log('Clicking on process:', process);
+                      const processWithDates = {
+                        ...process,
+                        dueDate: process.dueDate || process.due_date,
+                        pendingActions: process.pendingActions || process.pending_actions || []
+                      };
+                      console.log('Setting selectedProcess:', processWithDates);
+                      setSelectedProcess(processWithDates);
+                    }}
                 />
               ))}
             </div>

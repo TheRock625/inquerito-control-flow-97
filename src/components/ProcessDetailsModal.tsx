@@ -30,6 +30,7 @@ const ProcessDetailsModal = ({
   const [editingData, setEditingData] = useState<any>({});
   const [newPendingAction, setNewPendingAction] = useState('');
 
+  console.log('ProcessDetailsModal render - process:', process, 'open:', open);
   if (!process) return null;
 
   const handleStartEdit = () => {
