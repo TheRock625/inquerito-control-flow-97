@@ -101,19 +101,33 @@ const ProcessDetailsModal = ({
   };
 
   const handleAddPendingAction = () => {
+    console.log('handleAddPendingAction called');
+    console.log('newPendingAction value:', newPendingAction);
     const newAction = newPendingAction.trim();
-    if (!newAction) return;
+    console.log('trimmed newAction:', newAction);
+    if (!newAction) {
+      console.log('Empty action, returning');
+      return;
+    }
 
-    setEditingData(prev => ({
-      ...prev,
-      pending_actions: [...(prev.pending_actions || []), newAction]
-    }));
+    console.log('Current editingData.pending_actions:', editingData.pending_actions);
+    setEditingData(prev => {
+      const updated = {
+        ...prev,
+        pending_actions: [...(prev.pending_actions || []), newAction]
+      };
+      console.log('Updated editingData:', updated);
+      return updated;
+    });
     setNewPendingAction('');
+    console.log('Reset newPendingAction to empty');
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
+    console.log('Key pressed:', e.key);
     if (e.key === 'Enter') {
       e.preventDefault();
+      console.log('Enter pressed, calling handleAddPendingAction');
       handleAddPendingAction();
     }
   };
