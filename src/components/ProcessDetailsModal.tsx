@@ -28,26 +28,44 @@ const getStatusColor = (status: string) => {
 };
 
 const getDueDateColor = (dueDate: string) => {
-  const today = new Date();
-  const due = parseISO(dueDate);
-  const daysDiff = differenceInDays(due, today);
+  if (!dueDate) return 'text-gray-600';
   
-  if (daysDiff < 0) return 'text-red-600 font-bold';
-  if (daysDiff <= 2) return 'text-yellow-600 font-bold';
-  return 'text-green-600 font-bold';
+  try {
+    const today = new Date();
+    const due = parseISO(dueDate);
+    const daysDiff = differenceInDays(due, today);
+    
+    if (daysDiff < 0) return 'text-red-600 font-bold';
+    if (daysDiff <= 2) return 'text-yellow-600 font-bold';
+    return 'text-green-600 font-bold';
+  } catch (error) {
+    return 'text-gray-600';
+  }
 };
 
 const isWeekend = (dueDate: string) => {
-  const due = parseISO(dueDate);
-  const dayOfWeek = getDay(due);
-  return dayOfWeek === 0 || dayOfWeek === 6;
+  if (!dueDate) return false;
+  
+  try {
+    const due = parseISO(dueDate);
+    const dayOfWeek = getDay(due);
+    return dayOfWeek === 0 || dayOfWeek === 6;
+  } catch (error) {
+    return false;
+  }
 };
 
 const shouldShowAlert = (dueDate: string) => {
-  const today = new Date();
-  const due = parseISO(dueDate);
-  const daysDiff = differenceInDays(due, today);
-  return daysDiff <= 2 || isWeekend(dueDate);
+  if (!dueDate) return false;
+  
+  try {
+    const today = new Date();
+    const due = parseISO(dueDate);
+    const daysDiff = differenceInDays(due, today);
+    return daysDiff <= 2 || isWeekend(dueDate);
+  } catch (error) {
+    return false;
+  }
 };
 
 interface ProcessDetailsModalProps {
@@ -227,7 +245,15 @@ const ProcessDetailsModal = ({
                           </div>
                         )}
                         <p className={cn("text-lg font-bold", getDueDateColor(currentProcess.dueDate))}>
-                          {format(parseISO(currentProcess.dueDate), "dd/MM/yyyy", { locale: ptBR })}
+                          {currentProcess.dueDate ? (
+                            (() => {
+                              try {
+                                return format(parseISO(currentProcess.dueDate), "dd/MM/yyyy", { locale: ptBR });
+                              } catch (error) {
+                                return currentProcess.dueDate;
+                              }
+                            })()
+                          ) : 'Data não informada'}
                         </p>
                       </div>
                     )}
