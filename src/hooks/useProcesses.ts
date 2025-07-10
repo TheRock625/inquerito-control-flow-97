@@ -15,6 +15,9 @@ export interface Process {
   created_at: string;
   updated_at: string;
   user_id: string;
+  // Add camelCase aliases for compatibility
+  dueDate?: string;
+  pendingActions?: string[];
 }
 
 export const useProcesses = () => {
@@ -37,7 +40,12 @@ export const useProcesses = () => {
       
       const processedData = (data || []).map(process => ({
         ...process,
-        pending_actions: Array.isArray(process.pending_actions) ? process.pending_actions : []
+        pending_actions: Array.isArray(process.pending_actions) ? process.pending_actions : [],
+        // Add camelCase aliases
+        dueDate: process.due_date,
+        pendingActions: Array.isArray(process.pending_actions) 
+          ? process.pending_actions.filter((item: any) => typeof item === 'string') 
+          : []
       }));
       
       setProcesses(processedData);
@@ -62,7 +70,7 @@ export const useProcesses = () => {
         .insert([{
           ...processData,
           user_id: user.id,
-          pending_actions: processData.pending_actions || []
+          pending_actions: processData.pending_actions || processData.pendingActions || []
         }])
         .select()
         .single();
@@ -71,7 +79,11 @@ export const useProcesses = () => {
       
       const processedData = {
         ...data,
-        pending_actions: Array.isArray(data.pending_actions) ? data.pending_actions : []
+        pending_actions: Array.isArray(data.pending_actions) ? data.pending_actions : [],
+        dueDate: data.due_date,
+        pendingActions: Array.isArray(data.pending_actions) 
+          ? data.pending_actions.filter((item: any) => typeof item === 'string') 
+          : []
       };
       
       setProcesses(prev => [processedData, ...prev]);
@@ -93,9 +105,20 @@ export const useProcesses = () => {
 
   const updateProcess = async (id: string, updates: Partial<Process>) => {
     try {
+      // Convert camelCase to snake_case for database
+      const dbUpdates: any = { ...updates };
+      if (updates.dueDate) {
+        dbUpdates.due_date = updates.dueDate;
+        delete dbUpdates.dueDate;
+      }
+      if (updates.pendingActions) {
+        dbUpdates.pending_actions = updates.pendingActions;
+        delete dbUpdates.pendingActions;
+      }
+
       const { data, error } = await supabase
         .from('processes')
-        .update(updates)
+        .update(dbUpdates)
         .eq('id', id)
         .select()
         .single();
@@ -104,7 +127,11 @@ export const useProcesses = () => {
       
       const processedData = {
         ...data,
-        pending_actions: Array.isArray(data.pending_actions) ? data.pending_actions : []
+        pending_actions: Array.isArray(data.pending_actions) ? data.pending_actions : [],
+        dueDate: data.due_date,
+        pendingActions: Array.isArray(data.pending_actions) 
+          ? data.pending_actions.filter((item: any) => typeof item === 'string') 
+          : []
       };
       
       setProcesses(prev => prev.map(p => p.id === id ? processedData : p));

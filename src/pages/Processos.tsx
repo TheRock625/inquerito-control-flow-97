@@ -32,10 +32,10 @@ const Processos = () => {
   const handleSaveEditProcess = async (updatedProcess: any) => {
     await updateProcess(updatedProcess.id, {
       status: updatedProcess.status,
-      due_date: updatedProcess.due_date,
+      dueDate: updatedProcess.dueDate,
       forwarding: updatedProcess.forwarding,
       summary: updatedProcess.summary,
-      pending_actions: updatedProcess.pending_actions
+      pendingActions: updatedProcess.pendingActions
     });
     setEditingProcess(null);
   };
@@ -57,8 +57,8 @@ const Processos = () => {
     if (updatedProcess) {
       setSelectedProcess({
         ...updatedProcess,
-        dueDate: updatedProcess.due_date,
-        pendingActions: updatedProcess.pending_actions || []
+        dueDate: updatedProcess.dueDate,
+        pendingActions: updatedProcess.pendingActions || []
       });
     }
   };
@@ -83,7 +83,7 @@ const Processos = () => {
       })
       .sort((a, b) => {
         if (sortBy === 'dueDate') {
-          return new Date(a.due_date).getTime() - new Date(b.due_date).getTime();
+          return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
         }
         if (sortBy === 'number') {
           return a.number.localeCompare(b.number);
@@ -171,19 +171,19 @@ const Processos = () => {
                 key={process.id}
                 process={{
                   ...process,
-                  dueDate: process.due_date,
-                  pendingActions: process.pending_actions
+                  dueDate: process.dueDate,
+                  pendingActions: process.pendingActions
                 }}
                 completedActions={completedActions[process.id] || []}
                 onClick={() => setSelectedProcess({
                   ...process,
-                  dueDate: process.due_date,
-                  pendingActions: process.pending_actions || []
+                  dueDate: process.dueDate,
+                  pendingActions: process.pendingActions || []
                 })}
                 onEdit={() => setEditingProcess({
                   ...process,
-                  dueDate: process.due_date,
-                  pendingActions: process.pending_actions || []
+                  dueDate: process.dueDate,
+                  pendingActions: process.pendingActions || []
                 })}
               />
             ))}
