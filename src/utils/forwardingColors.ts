@@ -8,6 +8,7 @@ export const getForwardingColor = (forwarding: string) => {
     case 'TJDFT': return 'bg-indigo-100 text-indigo-800';
     case 'CONCLUIDO': return 'bg-emerald-100 text-emerald-800';
     case 'RELATADO': return 'bg-emerald-100 text-emerald-800';
+    case 'Escrivão': return 'bg-blue-100 text-blue-800';
     default: return 'bg-gray-100 text-gray-800';
   }
 };
