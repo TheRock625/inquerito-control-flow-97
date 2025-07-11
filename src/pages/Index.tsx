@@ -53,7 +53,7 @@ const Index = () => {
   }).length;
   const dueSoonProcesses = processes.filter(p => {
     const daysDiff = differenceInDays(parseISO(p.due_date), new Date());
-    return daysDiff >= 0 && daysDiff <= 2;
+    return daysDiff >= 0 && daysDiff <= 2 && p.forwarding !== 'TJDFT' && p.forwarding !== 'MPDFT';
   }).length;
   const completedProcesses = processes.filter(p => 
     p.status.toUpperCase() === 'RELATADO'
@@ -70,7 +70,7 @@ const Index = () => {
       case 'dueSoon':
         return processes.filter(p => {
           const daysDiff = differenceInDays(parseISO(p.due_date), new Date());
-          return daysDiff >= 0 && daysDiff <= 2;
+          return daysDiff >= 0 && daysDiff <= 2 && p.forwarding !== 'TJDFT' && p.forwarding !== 'MPDFT';
         });
       case 'completed':
         return processes.filter(p => p.status.toUpperCase() === 'RELATADO');
