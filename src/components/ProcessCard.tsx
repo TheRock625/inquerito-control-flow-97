@@ -117,7 +117,7 @@ const ProcessCard = ({
           <div className="flex items-center gap-2 text-sm">
             <div className="w-4 h-4 rounded-full bg-gray-400"></div>
             <span className="text-gray-600">Status:</span>
-            <span className="font-medium">{process.status}</span>
+            <span className={`font-medium ${process.status.toUpperCase() === 'RELATADO' ? 'text-green-800 bg-green-100 px-2 py-1 rounded' : ''}`}>{process.status}</span>
           </div>
 
           {/* Providências Pendentes */}
