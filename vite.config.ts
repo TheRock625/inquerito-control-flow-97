@@ -8,6 +8,20 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 8080,
+    watch: {
+      // Use polling instead of native file watching to reduce file descriptors
+      usePolling: true,
+      interval: 1000,
+      ignored: [
+        "**/node_modules/**",
+        "**/dist/**",
+        "**/build/**",
+        "**/coverage/**",
+        "**/.git/**",
+        "**/src-tauri/**",
+        "**/supabase/**"
+      ]
+    }
   },
   plugins: [
     react(),
@@ -19,4 +33,15 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  // Reduce build complexity
+  optimizeDeps: {
+    exclude: ['@tauri-apps/api'],
+    include: ['react', 'react-dom']
+  },
+  // Limit concurrent processing
+  build: {
+    rollupOptions: {
+      maxParallelFileOps: 5
+    }
+  }
 }));
