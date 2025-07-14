@@ -1,28 +1,40 @@
 # Como Testar o Sistema Tauri
 
-## Pré-requisitos
-1. Certifique-se de que o Rust está instalado: https://rustup.rs/
-2. A dependência `@tauri-apps/cli` já está instalada
+## ✅ SOLUÇÃO IMPLEMENTADA
 
-## Scripts para Adicionar ao package.json
+O sistema agora funciona **tanto no browser quanto como desktop app** com dados mock realistas.
 
-Adicione os seguintes scripts na seção "scripts" do package.json:
+## Opções de Teste
 
+### 1. 🌐 Teste no Browser (Funciona AGORA)
+```bash
+npm run dev
+```
+- ✅ Sistema completo funcional com dados mock
+- ✅ Todos os CRUDs funcionando (criar, editar, excluir, marcar ações)
+- ✅ Dados persistem durante a sessão
+- ✅ Interface idêntica ao desktop app
+
+### 2. 🖥️ Desktop App (Requer Rust)
+
+**Pré-requisitos:**
+1. Instalar Rust: https://rustup.rs/
+2. CLI Tauri já está instalada
+
+**Comando Simplificado:**
+```bash
+npx tauri dev
+```
+
+**OU usando scripts no package.json:**
 ```json
 {
   "scripts": {
-    "tauri": "tauri",
-    "tauri:dev": "tauri dev",
-    "tauri:build": "tauri build"
+    "tauri": "npx tauri",
+    "tauri:dev": "npx tauri dev", 
+    "tauri:build": "npx tauri build"
   }
 }
-```
-
-## Passos para Testar
-
-### 1. Desenvolvimento
-```bash
-npm run tauri:dev
 ```
 - Abre a aplicação como desktop app
 - Hot-reload ativo
