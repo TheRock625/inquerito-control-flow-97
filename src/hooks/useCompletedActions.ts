@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+import { getCompletedActions, toggleActionCompletion as tauriToggleActionCompletion } from '@/lib/tauri';
 
 interface CompletedAction {
   id: string;
@@ -14,29 +13,11 @@ interface CompletedAction {
 export const useCompletedActions = () => {
   const [completedActions, setCompletedActions] = useState<{[processId: string]: string[]}>({});
   const [loading, setLoading] = useState(true);
-  const { user } = useAuth();
   const { toast } = useToast();
 
   const fetchCompletedActions = async () => {
-    if (!user) return;
-    
     try {
-      const { data, error } = await supabase
-        .from('completed_actions')
-        .select('*')
-        .eq('user_id', user.id);
-
-      if (error) throw error;
-      
-      // Group by process_id
-      const grouped = (data || []).reduce((acc, action) => {
-        if (!acc[action.process_id]) {
-          acc[action.process_id] = [];
-        }
-        acc[action.process_id].push(action.action_text);
-        return acc;
-      }, {} as {[processId: string]: string[]});
-      
+      const grouped = await getCompletedActions();
       setCompletedActions(grouped);
     } catch (error) {
       console.error('Error fetching completed actions:', error);
@@ -46,41 +27,22 @@ export const useCompletedActions = () => {
   };
 
   const toggleActionCompletion = async (processId: string, actionText: string) => {
-    if (!user) return;
-
     const isCompleted = completedActions[processId]?.includes(actionText);
     
     try {
-      if (isCompleted) {
-        // Remove completed action
-        const { error } = await supabase
-          .from('completed_actions')
-          .delete()
-          .eq('process_id', processId)
-          .eq('action_text', actionText)
-          .eq('user_id', user.id);
+      const newState = await tauriToggleActionCompletion(processId, actionText);
 
-        if (error) throw error;
-
-        setCompletedActions(prev => ({
-          ...prev,
-          [processId]: prev[processId]?.filter(action => action !== actionText) || []
-        }));
-      } else {
-        // Add completed action
-        const { error } = await supabase
-          .from('completed_actions')
-          .insert([{
-            process_id: processId,
-            action_text: actionText,
-            user_id: user.id
-          }]);
-
-        if (error) throw error;
-
+      if (newState) {
+        // Action is now completed
         setCompletedActions(prev => ({
           ...prev,
           [processId]: [...(prev[processId] || []), actionText]
+        }));
+      } else {
+        // Action is now not completed
+        setCompletedActions(prev => ({
+          ...prev,
+          [processId]: prev[processId]?.filter(action => action !== actionText) || []
         }));
       }
     } catch (error) {
@@ -95,7 +57,7 @@ export const useCompletedActions = () => {
 
   useEffect(() => {
     fetchCompletedActions();
-  }, [user]);
+  }, []);
 
   return {
     completedActions,

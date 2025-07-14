@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+import { getAllProcesses, addProcess as tauriAddProcess, updateProcess as tauriUpdateProcess, deleteProcess as tauriDeleteProcess } from '@/lib/tauri';
 
 export interface Process {
   id: string;
@@ -10,11 +9,10 @@ export interface Process {
   status: string;
   due_date: string;
   forwarding: string;
-  pending_actions: string[] | any;
+  pending_actions: string[];
   summary?: string;
   created_at: string;
   updated_at: string;
-  user_id: string;
   // Add camelCase aliases for compatibility
   dueDate?: string;
   pendingActions?: string[];
@@ -23,30 +21,21 @@ export interface Process {
 export const useProcesses = () => {
   const [processes, setProcesses] = useState<Process[]>([]);
   const [loading, setLoading] = useState(true);
-  const { user } = useAuth();
   const { toast } = useToast();
 
   const fetchProcesses = async () => {
-    if (!user) return;
-    
     try {
-      const { data, error } = await supabase
-        .from('processes')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
+      const data = await getAllProcesses();
       
-      const processedData = (data || []).map(process => ({
+      const processedData = data.map(process => ({
         ...process,
         pending_actions: Array.isArray(process.pending_actions) ? process.pending_actions : [],
-        // Add camelCase aliases
+        // Add camelCase aliases for compatibility
         dueDate: process.due_date,
         pendingActions: Array.isArray(process.pending_actions) 
           ? process.pending_actions.filter((item: any) => typeof item === 'string') 
           : []
-      }));
+      } as Process));
       
       setProcesses(processedData);
     } catch (error) {
@@ -62,20 +51,11 @@ export const useProcesses = () => {
   };
 
   const addProcess = async (processData: Omit<Process, 'id' | 'created_at' | 'updated_at' | 'user_id'>) => {
-    if (!user) return;
-
     try {
-      const { data, error } = await supabase
-        .from('processes')
-        .insert([{
-          ...processData,
-          user_id: user.id,
-          pending_actions: processData.pending_actions || processData.pendingActions || []
-        }])
-        .select()
-        .single();
-
-      if (error) throw error;
+      const data = await tauriAddProcess({
+        ...processData,
+        pending_actions: processData.pending_actions || processData.pendingActions || []
+      });
       
       const processedData = {
         ...data,
@@ -116,14 +96,7 @@ export const useProcesses = () => {
         delete dbUpdates.pendingActions;
       }
 
-      const { data, error } = await supabase
-        .from('processes')
-        .update(dbUpdates)
-        .eq('id', id)
-        .select()
-        .single();
-
-      if (error) throw error;
+      const data = await tauriUpdateProcess(id, dbUpdates);
       
       const processedData = {
         ...data,
@@ -153,12 +126,7 @@ export const useProcesses = () => {
 
   const deleteProcess = async (id: string) => {
     try {
-      const { error } = await supabase
-        .from('processes')
-        .delete()
-        .eq('id', id);
-
-      if (error) throw error;
+      await tauriDeleteProcess(id);
       
       setProcesses(prev => prev.filter(p => p.id !== id));
       toast({
@@ -177,7 +145,7 @@ export const useProcesses = () => {
 
   useEffect(() => {
     fetchProcesses();
-  }, [user]);
+  }, []);
 
   return {
     processes,

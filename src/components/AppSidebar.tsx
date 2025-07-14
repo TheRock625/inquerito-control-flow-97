@@ -19,9 +19,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
-import { useUserProfile } from '@/hooks/useUserProfile';
 import { Button } from '@/components/ui/button';
 
 const menuItems = [
@@ -46,9 +44,7 @@ export function AppSidebar() {
   const { state, toggleSidebar } = useSidebar();
   const location = useLocation();
   const isCollapsed = state === 'collapsed';
-  const { user, signOut } = useAuth();
   const { toast } = useToast();
-  const { profile } = useUserProfile();
   
   const [sidebarBehavior, setSidebarBehavior] = useState<'manual' | 'auto'>('manual');
   const [mouseNearEdge, setMouseNearEdge] = useState(false);
@@ -79,7 +75,7 @@ export function AppSidebar() {
       : 'hover:bg-gray-100';
   };
 
-  const displayName = profile?.display_name || user?.email || 'Usuário';
+  const displayName = 'Sistema Offline';
 
   return (
     <Sidebar className="border-r">
@@ -163,25 +159,16 @@ export function AppSidebar() {
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton 
-                  onClick={async () => {
-                    const { error } = await signOut();
-                    if (error) {
-                      toast({
-                        title: "Erro",
-                        description: "Erro ao fazer logout",
-                        variant: "destructive",
-                      });
-                    } else {
-                      toast({
-                        title: "Logout realizado",
-                        description: "Até logo!",
-                      });
-                    }
+                  onClick={() => {
+                    toast({
+                      title: "Sistema Offline",
+                      description: "Aplicação rodando em modo offline",
+                    });
                   }}
-                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                  className="text-green-600 hover:text-green-700 hover:bg-green-50"
                 >
                   <LogOut className="h-4 w-4" />
-                  {!isCollapsed && <span>Sair</span>}
+                  {!isCollapsed && <span>Offline</span>}
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>

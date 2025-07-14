@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Plus, Trash2, Home, GripVertical, Lock } from 'lucide-react';
 import { useConfig } from '@/contexts/ConfigContext';
-import { useUserProfile } from '@/hooks/useUserProfile';
+
 import { Link } from 'react-router-dom';
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 
@@ -35,7 +35,14 @@ const Configuracoes = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
   
-  const { profile, updateProfile, changePassword } = useUserProfile();
+  // Mock functions for offline mode
+  const updateProfile = async () => {
+    alert('Funcionalidade de perfil não disponível no modo offline');
+  };
+  
+  const changePassword = async () => {
+    alert('Funcionalidade de senha não disponível no modo offline');
+  };
 
   const handleAddOrigin = () => {
     if (newOrigin.trim()) {
@@ -81,7 +88,7 @@ const Configuracoes = () => {
       return;
     }
     
-    await changePassword(newPassword);
+    await changePassword();
     setNewPassword('');
     setConfirmPassword('');
   };
@@ -105,15 +112,13 @@ const Configuracoes = () => {
       return;
     }
     
-    await updateProfile({ display_name: trimmedName });
+    await updateProfile();
   };
 
-  // Initialize display name when profile loads
+  // Initialize display name for offline mode
   useEffect(() => {
-    if (profile?.display_name) {
-      setDisplayName(profile.display_name);
-    }
-  }, [profile]);
+    setDisplayName('Usuário Offline');
+  }, []);
 
   const handleDragEnd = (result: DropResult) => {
     if (!result.destination) return;

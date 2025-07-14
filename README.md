@@ -1,4 +1,4 @@
-# Welcome to your Lovable project
+# Sistema de Inquéritos - Desktop Offline
 
 ## Project info
 
