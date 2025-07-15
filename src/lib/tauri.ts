@@ -1,9 +1,8 @@
 // Tauri API wrapper for type safety - Mock for development
-declare global {
-  interface Window {
-    __TAURI__: any;
-  }
-}
+// Import para Tauri v1.6.x
+import { invoke } from '@tauri-apps/api/tauri';
+
+// Remover declaração global pois já existe no @tauri-apps/api
 
 // Mock data for development
 const mockProcesses: TauriProcess[] = [
@@ -38,9 +37,9 @@ let mockCompletedActions: {[processId: string]: string[]} = {
   '2': []
 };
 
-const invoke = (command: string, args?: any): Promise<any> => {
+const tauriInvoke = (command: string, args?: any): Promise<any> => {
   if (typeof window !== 'undefined' && window.__TAURI__) {
-    return window.__TAURI__.invoke(command, args);
+    return invoke(command, args);
   }
   
   // Mock implementation for development
@@ -138,20 +137,20 @@ export interface TauriProcessUpdates {
 
 // Processo CRUD operations
 export const getAllProcesses = (): Promise<TauriProcess[]> =>
-  invoke('get_all_processes');
+  tauriInvoke('get_all_processes');
 
 export const addProcess = (processData: TauriProcessData): Promise<TauriProcess> =>
-  invoke('add_process', { processData });
+  tauriInvoke('add_process', { processData });
 
 export const updateProcess = (processId: string, updates: TauriProcessUpdates): Promise<TauriProcess> =>
-  invoke('update_process', { processId, updates });
+  tauriInvoke('update_process', { processId, updates });
 
 export const deleteProcess = (processId: string): Promise<void> =>
-  invoke('delete_process', { processId });
+  tauriInvoke('delete_process', { processId });
 
 // Completed actions operations
 export const getCompletedActions = (): Promise<{[processId: string]: string[]}> =>
-  invoke('get_completed_actions');
+  tauriInvoke('get_completed_actions');
 
 export const toggleActionCompletion = (processId: string, actionText: string): Promise<boolean> =>
-  invoke('toggle_action_completion', { processId, actionText });
+  tauriInvoke('toggle_action_completion', { processId, actionText });

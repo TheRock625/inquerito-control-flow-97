@@ -13,12 +13,18 @@
   "tauri": {
     "allowlist": {
       "all": false,
-      "shell": {
-        "all": false,
-        "open": true
+      "fs": {
+        "readFile": true,
+        "writeFile": true
       },
       "path": {
         "all": true
+      },
+      "dialog": {
+        "open": true
+      },
+      "shell": {
+        "open": true
       }
     },
     "bundle": {
@@ -26,15 +32,12 @@
       "targets": "all",
       "identifier": "com.sistema.inqueritos",
       "icon": [
-        "icons/32x32.png",
-        "icons/128x128.png",
-        "icons/128x128@2x.png",
+        "icons/icon.ico",
         "icons/icon.icns",
-        "icons/icon.ico"
+        "icons/128x128.png"
       ],
       "resources": ["database.sqlite"],
       "externalBin": [],
-      "copyright": "",
       "category": "Business",
       "shortDescription": "Sistema de Inquéritos Desktop",
       "longDescription": "Sistema completo para gerenciamento de inquéritos policiais offline"
@@ -47,19 +50,12 @@
     },
     "windows": [
       {
-        "fullscreen": false,
-        "resizable": true,
         "title": "Sistema de Inquéritos",
         "width": 1200,
         "height": 800,
-        "minWidth": 800,
-        "minHeight": 600
+        "resizable": true,
+        "fullscreen": false
       }
-    ],
-    "plugins": {
-      "sql": {
-        "preload": ["sqlite:database.sqlite"]
-      }
-    }
+    ]
   }
 }
