@@ -1,0 +1,26 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Capability for the main window",
+  "windows": ["main"],
+  "permissions": [
+    "core:default",
+    "core:window:default",
+    "core:window:allow-close",
+    "core:window:allow-center",
+    "core:window:allow-request-user-attention",
+    "core:window:allow-set-resizable",
+    "core:window:allow-set-title",
+    "core:window:allow-start-dragging",
+    "core:window:allow-toggle-maximize",
+    "core:app:default",
+    "core:app:allow-version",
+    "core:app:allow-name",
+    "core:app:allow-tauri-version",
+    "sql:default",
+    "sql:allow-load",
+    "sql:allow-execute",
+    "sql:allow-select",
+    "sql:allow-close"
+  ]
+}

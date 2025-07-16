@@ -9,8 +9,8 @@
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
-     "tauri": "npx tauri",
-    "tauri:dev": "npx tauri dev", 
+    "tauri": "npx tauri",
+    "tauri:dev": "npx tauri dev",
     "tauri:build": "npx tauri build"
   },
   "dependencies": {
@@ -43,7 +43,7 @@
     "@radix-ui/react-toggle-group": "^1.1.0",
     "@radix-ui/react-tooltip": "^1.1.4",
     "@tanstack/react-query": "^5.56.2",
-    "@tauri-apps/api": "^1.6.0",
+    "@tauri-apps/api": "^2.6.0",
     "@types/react-beautiful-dnd": "^13.1.8",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -68,9 +68,9 @@
     "zod": "^4.0.2"
   },
   "devDependencies": {
-    "@tauri-apps/cli": "^1.6.3", 
     "@eslint/js": "^9.9.0",
     "@tailwindcss/typography": "^0.5.15",
+    "@tauri-apps/cli": "^2.6.2",
     "@types/node": "^22.5.5",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",

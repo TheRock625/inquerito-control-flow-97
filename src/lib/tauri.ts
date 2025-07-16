@@ -1,6 +1,6 @@
 // Tauri API wrapper for type safety - Mock for development
 // Import para Tauri v1.6.x
-import { invoke } from '@tauri-apps/api/tauri';
+import { invoke } from '@tauri-apps/api/core';
 
 // Remover declaração global pois já existe no @tauri-apps/api
 
@@ -38,7 +38,7 @@ let mockCompletedActions: {[processId: string]: string[]} = {
 };
 
 const tauriInvoke = (command: string, args?: any): Promise<any> => {
-  if (typeof window !== 'undefined' && window.__TAURI__) {
+  if (typeof window !== 'undefined' && (window as any).__TAURI__) {
     return invoke(command, args);
   }
   

@@ -7,7 +7,7 @@ import { componentTagger } from "lovable-tagger";
 export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
-    port: 5173, // Corrigido para coincidir com tauri.conf.json
+    port: 8080,
     watch: {
       // Use polling instead of native file watching to reduce file descriptors
       usePolling: true,

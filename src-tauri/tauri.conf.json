@@ -1,53 +1,15 @@
 {
+  "$schema": "https://schema.tauri.app/config/2.0.0",
+  "productName": "Sistema de Inquéritos",
+  "version": "1.0.0",
+  "identifier": "com.sistema.inqueritos",
   "build": {
     "beforeDevCommand": "npm run dev",
     "beforeBuildCommand": "npm run build",
-    "devPath": "http://localhost:5173",
-    "distDir": "../dist",
-    "withGlobalTauri": false
+    "devUrl": "http://localhost:8080",
+    "frontendDist": "../dist"
   },
-  "package": {
-    "productName": "Sistema de Inquéritos",
-    "version": "1.0.0"
-  },
-  "tauri": {
-    "allowlist": {
-      "all": false,
-      "fs": {
-        "readFile": true,
-        "writeFile": true
-      },
-      "path": {
-        "all": true
-      },
-      "dialog": {
-        "open": true
-      },
-      "shell": {
-        "open": true
-      }
-    },
-    "bundle": {
-      "active": true,
-      "targets": "all",
-      "identifier": "com.sistema.inqueritos",
-      "icon": [
-        "icons/icon.ico",
-        "icons/icon.icns",
-        "icons/128x128.png"
-      ],
-      "resources": ["database.sqlite"],
-      "externalBin": [],
-      "category": "Business",
-      "shortDescription": "Sistema de Inquéritos Desktop",
-      "longDescription": "Sistema completo para gerenciamento de inquéritos policiais offline"
-    },
-    "security": {
-      "csp": null
-    },
-    "updater": {
-      "active": false
-    },
+  "app": {
     "windows": [
       {
         "title": "Sistema de Inquéritos",
@@ -56,6 +18,27 @@
         "resizable": true,
         "fullscreen": false
       }
-    ]
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/icon.ico",
+      "icons/icon.icns", 
+      "icons/128x128.png"
+    ],
+    "resources": ["database.sqlite"],
+    "category": "Business",
+    "shortDescription": "Sistema de Inquéritos Desktop",
+    "longDescription": "Sistema completo para gerenciamento de inquéritos policiais offline"
+  },
+  "plugins": {
+    "sql": {
+      "preload": ["sqlite:database.sqlite"]
+    }
   }
 }
