@@ -83,24 +83,19 @@ const ProcessCard = ({
   return (
     <div className="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow p-4 cursor-pointer" onClick={onClick}>
       <div className="space-y-3">
-        {/* Header com círculo IP e número do processo */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-              <span className="text-white text-xs font-bold">IP</span>
-            </div>
-            <span className="text-base font-semibold text-gray-900">
-              {process.number}
-            </span>
+        {/* Header com círculo vermelho e número do processo */}
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center">
+            <span className="text-white text-xs font-bold">{process.number}</span>
           </div>
-          <Badge variant="outline" className="text-xs text-gray-600 bg-gray-50">
-            IP
-          </Badge>
+          <span className="text-base font-medium text-gray-900">
+            Inquérito Policial
+          </span>
         </div>
 
-        {/* Tipo de processo */}
-        <div className="text-sm font-medium text-gray-700 uppercase">
-          {process.summary || process.type}
+        {/* Descrição do processo */}
+        <div className="text-sm text-gray-700">
+          {process.summary || process.type || 'Processo de investigação sobre furto qualificado'}
         </div>
 
         {/* Vencimento */}
@@ -110,7 +105,6 @@ const ProcessCard = ({
           <span className={getDueDateColor(process.dueDate)}>
             {format(parseISO(process.dueDate), "dd/MM/yyyy", { locale: ptBR })}
           </span>
-          {showAlert && <AlertTriangle className="w-4 h-4 text-yellow-500" />}
         </div>
 
         {/* Status */}
@@ -131,23 +125,12 @@ const ProcessCard = ({
           </div>
         )}
 
-        {/* Encaminhamento */}
-        {process.forwarding && (
-          <div className="flex items-center gap-2 text-sm">
-            <div className="w-4 h-4 rounded-full bg-purple-400"></div>
-            <span className="text-gray-600">Encaminhamento:</span>
-            <Badge className={getForwardingColor(process.forwarding)}>
-              {process.forwarding}
-            </Badge>
-          </div>
-        )}
-
-        {/* Botão de ação */}
-        <div className="pt-2">
+        {/* Botões de ação */}
+        <div className="flex gap-2 pt-2">
           <Button 
             variant="outline" 
             size="sm" 
-            className="w-full text-blue-600 border-blue-200 hover:bg-blue-50"
+            className="flex-1 text-blue-600 border-blue-200 hover:bg-blue-50"
             onClick={(e) => {
               e.stopPropagation();
               onClick();
@@ -155,6 +138,19 @@ const ProcessCard = ({
           >
             Detalhes
           </Button>
+          {process.forwarding && (
+            <Button 
+              variant="outline" 
+              size="sm"
+              className="text-blue-600 border-blue-200 hover:bg-blue-50"
+              onClick={(e) => {
+                e.stopPropagation();
+                onEdit?.();
+              }}
+            >
+              {process.forwarding}
+            </Button>
+          )}
         </div>
       </div>
     </div>
