@@ -8,7 +8,7 @@
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
      "tauri": "npx tauri",
     "tauri:dev": "npx tauri dev", 
     "tauri:build": "npx tauri build"
