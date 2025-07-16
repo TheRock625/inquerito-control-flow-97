@@ -91,25 +91,19 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header with gray background */}
-      <div className="bg-gray-100 border-b border-gray-200 px-6 py-6">
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Sistema IP/TC</h1>
-            <p className="text-gray-600 mt-1">Controle de Inquéritos</p>
-          </div>
-          <Button 
-            className="bg-blue-600 hover:bg-blue-700"
-            onClick={() => setIsNewProcessModalOpen(true)}
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Novo Processo
-          </Button>
+    <div className="p-6 space-y-6">
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold">Sistema IP/TC</h1>
+          <p className="text-muted-foreground mt-1">Controle de Inquéritos</p>
         </div>
+        <Button onClick={() => setIsNewProcessModalOpen(true)}>
+          <Plus className="w-4 h-4 mr-2" />
+          Novo Processo
+        </Button>
       </div>
 
-      <div className="p-6 space-y-6">
+      <div className="space-y-6">
         <NewProcessModal
           open={isNewProcessModalOpen}
           onClose={() => setIsNewProcessModalOpen(false)}
@@ -129,54 +123,54 @@ const Index = () => {
         {/* Statistics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <Card 
-            className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200 cursor-pointer hover:shadow-lg transition-all transform hover:scale-105"
+            className="cursor-pointer hover:shadow-lg transition-all"
             onClick={() => setFilterType('all')}
           >
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-blue-700">Total de Processos</CardTitle>
-              <BarChart3 className="h-4 w-4 text-blue-600" />
+              <CardTitle className="text-sm font-medium">Total de Processos</CardTitle>
+              <BarChart3 className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-blue-800">{totalProcesses}</div>
+              <div className="text-2xl font-bold">{totalProcesses}</div>
             </CardContent>
           </Card>
 
           <Card 
-            className="bg-gradient-to-br from-red-50 to-red-100 border-red-200 cursor-pointer hover:shadow-lg transition-all transform hover:scale-105"
+            className="cursor-pointer hover:shadow-lg transition-all"
             onClick={() => setFilterType('overdue')}
           >
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-red-700">Vencidos</CardTitle>
-              <AlertTriangle className="h-4 w-4 text-red-600" />
+              <CardTitle className="text-sm font-medium">Vencidos</CardTitle>
+              <AlertTriangle className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-red-800">{overdueProcesses}</div>
+              <div className="text-2xl font-bold">{overdueProcesses}</div>
             </CardContent>
           </Card>
 
           <Card 
-            className="bg-gradient-to-br from-yellow-50 to-yellow-100 border-yellow-200 cursor-pointer hover:shadow-lg transition-all transform hover:scale-105"
+            className="cursor-pointer hover:shadow-lg transition-all"
             onClick={() => setFilterType('dueSoon')}
           >
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-yellow-700">Vencidos Próximos</CardTitle>
-              <Clock className="h-4 w-4 text-yellow-600" />
+              <CardTitle className="text-sm font-medium">Vencidos Próximos</CardTitle>
+              <Clock className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-yellow-800">{dueSoonProcesses}</div>
+              <div className="text-2xl font-bold">{dueSoonProcesses}</div>
             </CardContent>
           </Card>
 
           <Card 
-            className="bg-gradient-to-br from-green-50 to-green-100 border-green-200 cursor-pointer hover:shadow-lg transition-all transform hover:scale-105"
+            className="cursor-pointer hover:shadow-lg transition-all"
             onClick={() => setFilterType('completed')}
           >
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-green-700">Relatados</CardTitle>
-              <CheckCircle className="h-4 w-4 text-green-600" />
+              <CardTitle className="text-sm font-medium">Relatados</CardTitle>
+              <CheckCircle className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-green-800">{completedProcesses}</div>
+              <div className="text-2xl font-bold">{completedProcesses}</div>
             </CardContent>
           </Card>
         </div>
@@ -239,8 +233,8 @@ const Index = () => {
             </div>
             
             {filteredProcesses.length === 0 && (
-                <div className="text-center py-8 text-gray-500">
-                  <BarChart3 className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                <div className="text-center py-8 text-muted-foreground">
+                  <BarChart3 className="w-12 h-12 mx-auto mb-4 text-muted-foreground/50" />
                   <p>Nenhum processo encontrado para este filtro.</p>
                   <p className="text-sm">Clique em "Limpar Filtro" para ver todos os processos.</p>
                 </div>

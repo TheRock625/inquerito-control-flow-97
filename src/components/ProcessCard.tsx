@@ -81,7 +81,7 @@ const ProcessCard = ({
     return '🟢'; // Normal
   };
   return (
-    <div className="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow p-4 cursor-pointer" onClick={onClick}>
+    <div className="bg-card border rounded-lg shadow-sm hover:shadow-md transition-shadow p-4 cursor-pointer" onClick={onClick}>
       <div className="space-y-3">
         {/* Header com círculo IP e número do processo */}
         <div className="flex items-center justify-between">
@@ -89,24 +89,24 @@ const ProcessCard = ({
             <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
               <span className="text-white text-xs font-bold">IP</span>
             </div>
-            <span className="text-base font-semibold text-gray-900">
+            <span className="text-base font-semibold">
               {process.number}
             </span>
           </div>
-          <Badge variant="outline" className="text-xs text-gray-600 bg-gray-50">
+          <Badge variant="outline" className="text-xs">
             IP
           </Badge>
         </div>
 
         {/* Tipo de processo */}
-        <div className="text-sm font-medium text-gray-700 uppercase">
+        <div className="text-sm font-medium text-muted-foreground uppercase">
           {process.summary || process.type}
         </div>
 
         {/* Vencimento */}
         <div className="flex items-center gap-2 text-sm">
-          <Calendar className="w-4 h-4 text-gray-400" />
-          <span className="text-gray-600">Vencimento:</span>
+          <Calendar className="w-4 h-4 text-muted-foreground" />
+          <span className="text-muted-foreground">Vencimento:</span>
           <span className={getDueDateColor(process.dueDate)}>
             {format(parseISO(process.dueDate), "dd/MM/yyyy", { locale: ptBR })}
           </span>
@@ -115,16 +115,16 @@ const ProcessCard = ({
 
         {/* Status */}
         <div className="flex items-center gap-2 text-sm">
-          <div className="w-4 h-4 rounded-full bg-gray-400"></div>
-          <span className="text-gray-600">Status:</span>
-          <span className="font-medium text-gray-800">{process.status}</span>
+          <div className="w-4 h-4 rounded-full bg-muted"></div>
+          <span className="text-muted-foreground">Status:</span>
+          <span className="font-medium">{process.status}</span>
         </div>
 
         {/* Providências */}
         {pendingActions.length > 0 && (
           <div className="flex items-center gap-2 text-sm">
             <ListTodo className="w-4 h-4 text-orange-500" />
-            <span className="text-gray-600">Providências:</span>
+            <span className="text-muted-foreground">Providências:</span>
             <span className="text-orange-600 font-medium">
               {pendingCount} pendente{pendingCount !== 1 ? 's' : ''}
             </span>
@@ -136,7 +136,7 @@ const ProcessCard = ({
           <Button 
             variant="outline" 
             size="sm" 
-            className="flex-1 text-blue-600 border-blue-200 hover:bg-blue-50"
+            className="flex-1"
             onClick={(e) => {
               e.stopPropagation();
               onClick();
@@ -147,7 +147,6 @@ const ProcessCard = ({
           <Button 
             variant="outline" 
             size="sm"
-            className="text-blue-600 border-blue-200 hover:bg-blue-50"
             onClick={(e) => {
               e.stopPropagation();
               onEdit?.();

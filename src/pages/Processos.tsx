@@ -99,8 +99,8 @@ const Processos = () => {
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Processos</h1>
-          <p className="text-gray-600">Gerenciamento completo de IPs, TCs e PAAIs</p>
+          <h1 className="text-3xl font-bold">Processos</h1>
+          <p className="text-muted-foreground">Gerenciamento completo de IPs, TCs e PAAIs</p>
         </div>
         <div className="flex gap-2">
           <Link to="/">
@@ -108,10 +108,7 @@ const Processos = () => {
               <Home className="w-4 h-4" />
             </Button>
           </Link>
-          <Button 
-            className="bg-blue-600 hover:bg-blue-700"
-            onClick={() => setIsNewProcessModalOpen(true)}
-          >
+          <Button onClick={() => setIsNewProcessModalOpen(true)}>
             <Plus className="w-4 h-4 mr-2" />
             Novo Processo
           </Button>
@@ -157,14 +154,14 @@ const Processos = () => {
 
       <div>
         <div className="mb-4">
-          <h2 className="text-xl font-semibold text-gray-900">
+          <h2 className="text-xl font-semibold">
             {filteredProcesses.length} processo{filteredProcesses.length !== 1 ? 's' : ''} encontrado{filteredProcesses.length !== 1 ? 's' : ''}
           </h2>
         </div>
         
         {filteredProcesses.length === 0 ? (
-          <div className="text-center py-12 text-gray-500">
-            <List className="w-16 h-16 mx-auto mb-4 text-gray-300" />
+          <div className="text-center py-12 text-muted-foreground">
+            <List className="w-16 h-16 mx-auto mb-4 text-muted-foreground/50" />
             <p className="text-lg">Nenhum processo encontrado com os filtros aplicados.</p>
           </div>
         ) : (
