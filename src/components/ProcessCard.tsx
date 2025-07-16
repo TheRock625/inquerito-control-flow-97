@@ -83,9 +83,9 @@ const ProcessCard = ({
   return (
     <div className="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow p-4 cursor-pointer" onClick={onClick}>
       <div className="space-y-3">
-        {/* Header com círculo vermelho e número do processo */}
+        {/* Header com círculo vermelho e número/ano do processo */}
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center">
+          <div className="w-6 h-6 bg-red-500 rounded-full flex items-center justify-center">
             <span className="text-white text-xs font-bold">{process.number}</span>
           </div>
           <span className="text-base font-medium text-gray-900">
@@ -109,7 +109,7 @@ const ProcessCard = ({
 
         {/* Status */}
         <div className="flex items-center gap-2 text-sm">
-          <div className="w-4 h-4 rounded-full bg-gray-400"></div>
+          <div className="w-3 h-3 rounded-full bg-gray-400"></div>
           <span className="text-gray-600">Status:</span>
           <span className="font-medium text-gray-800">{process.status}</span>
         </div>
