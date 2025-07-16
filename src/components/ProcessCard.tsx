@@ -131,29 +131,29 @@ const ProcessCard = ({
           </div>
         )}
 
-        {/* Botões de ação */}
-        <div className="flex gap-2 pt-2">
+        {/* Encaminhamento */}
+        {process.forwarding && (
+          <div className="flex items-center gap-2 text-sm">
+            <div className="w-4 h-4 rounded-full bg-purple-400"></div>
+            <span className="text-gray-600">Encaminhamento:</span>
+            <Badge className={getForwardingColor(process.forwarding)}>
+              {process.forwarding}
+            </Badge>
+          </div>
+        )}
+
+        {/* Botão de ação */}
+        <div className="pt-2">
           <Button 
             variant="outline" 
             size="sm" 
-            className="flex-1 text-blue-600 border-blue-200 hover:bg-blue-50"
+            className="w-full text-blue-600 border-blue-200 hover:bg-blue-50"
             onClick={(e) => {
               e.stopPropagation();
               onClick();
             }}
           >
             Detalhes
-          </Button>
-          <Button 
-            variant="outline" 
-            size="sm"
-            className="text-blue-600 border-blue-200 hover:bg-blue-50"
-            onClick={(e) => {
-              e.stopPropagation();
-              onEdit?.();
-            }}
-          >
-            Escritório
           </Button>
         </div>
       </div>
