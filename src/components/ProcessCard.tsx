@@ -16,6 +16,7 @@ const getStatusInfo = (dueDate: string) => {
     const diffInDays = Math.abs(daysDiff);
     return isWeekend && diffInDays <= 7;
   };
+  
   if (daysDiff < 0) {
     // Vencido
     return {
@@ -50,6 +51,7 @@ const getForwardingColor = (forwarding: string) => {
 // Função para formatar o número do processo
 const formatProcessNumber = (process: any): string => {
   if (!process) return '';
+  
   const typeMap: Record<string, string> = {
     'Inquérito Policial': 'IP',
     'Termo Circunstanciado': 'TC',
@@ -57,8 +59,10 @@ const formatProcessNumber = (process: any): string => {
   };
   const rawType = process.type ?? '';
   const typeAbbreviation = typeMap[rawType] ?? '';
+  
   const rawNumber = process.number ?? process.processNumber;
   const formattedNumber = rawNumber !== undefined ? rawNumber.toString().padStart(2, '0') : '';
+  
   const rawYear = process.year;
   let formattedYear = '';
   if (rawYear !== undefined) {
@@ -66,17 +70,21 @@ const formatProcessNumber = (process: any): string => {
     formattedYear = yearStr.slice(-2);
   }
   const origin = process.origin ?? '';
+  
   const main = [typeAbbreviation, formattedNumber].filter(Boolean).join(' ').trim();
   const yearSection = formattedYear ? `/${formattedYear}` : '';
   const right = origin ? ` - ${origin}` : '';
+  
   return `${main}${yearSection}${right}`.trim();
 };
+
 interface ProcessCardProps {
   process: any;
   onClick: () => void;
   completedActions?: string[];
   onEdit?: () => void;
 }
+
 const ProcessCard = ({
   process,
   onClick,
@@ -88,11 +96,15 @@ const ProcessCard = ({
   // Contar pendências não completadas
   const pendingActions = process.pending_actions || process.pendingActions || [];
   const pendingCount = pendingActions.length - completedActions.length;
-  return <div className="bg-white border border-gray-300 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 p-3 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-200" onClick={onClick} style={{
-    margin: '10px',
-    padding: '8px'
-  }}>
+
+  return (
+    <div className="bg-white border border-gray-300 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 p-3 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-200" onClick={onClick} 
+      style={{
+        margin: '10px',
+        padding: '8px'
+      }}>
       <div className="space-y-3">
+        
         {/* Cabeçalho com bolinha colorida e número do processo */}
         <div className="flex items-center gap-2">
           <div className={`w-3 h-3 rounded-full ${statusInfo.circleColor}`}></div>
@@ -112,8 +124,8 @@ const ProcessCard = ({
           <span className="font-bold text-gray-800 text-sm">Vencimento:</span>
           <span className={`${statusInfo.dateColor} font-medium`}>
             {format(parseISO(process.dueDate), "dd/MM/yyyy", {
-            locale: ptBR
-          })}
+              locale: ptBR
+            })}
           </span>
         </div>
 
@@ -143,13 +155,15 @@ const ProcessCard = ({
         {/* Botões de ação */}
         <div className="flex gap-2 pt-2 justify-end">
           <Button variant="default" size="sm" className="bg-blue-primary hover:bg-blue-600 text-white text-sm px-4 py-2 rounded transition-colors duration-200" onClick={e => {
-          e.stopPropagation();
-          onClick();
-        }}>
+            e.stopPropagation();
+            onClick();
+          }}>
             Detalhes
           </Button>
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export default ProcessCard;
