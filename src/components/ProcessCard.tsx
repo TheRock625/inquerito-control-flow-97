@@ -58,9 +58,9 @@ const getForwardingColor = (forwarding: string) => {
 // Função para formatar o número do processo
 const formatProcessNumber = (process: any) => {
   const processType = process.type || 'IP'; // IP, TC, PAAI
-  const processNumber = process.number || process.processNumber || '01';
+  const processNumber = process.number || process.processNumber || '10';
   const processYear = process.year || '25'; // ano em 2 dígitos
-  const origin = process.origin || '24º DP';
+  const origin = process.origin || '15º DF';
   
   // Formatar número com pelo menos 2 dígitos
   const formattedNumber = processNumber.toString().padStart(2, '0');
