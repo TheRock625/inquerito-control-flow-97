@@ -116,7 +116,7 @@ const ProcessCard = ({
 
         {/* Descrição do processo */}
         <div className="text-black text-sm font-arial">
-          {process.summary || process.type || '--'}
+          {process.summary || '--'}
         </div>
 
         {/* Vencimento */}
