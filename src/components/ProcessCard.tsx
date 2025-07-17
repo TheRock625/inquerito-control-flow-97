@@ -54,6 +54,19 @@ const getForwardingColor = (forwarding: string) => {
   const index = forwarding.length % colors.length;
   return colors[index];
 };
+
+// Função para formatar o número do processo
+const formatProcessNumber = (process: any) => {
+  const processType = process.type || 'IP'; // IP, TC, PAAI
+  const processNumber = process.number || process.processNumber || '01';
+  const processYear = process.year || '25'; // ano em 2 dígitos
+  const origin = process.origin || '24º DP';
+  
+  // Formatar número com pelo menos 2 dígitos
+  const formattedNumber = processNumber.toString().padStart(2, '0');
+  
+  return `${processType} ${formattedNumber}/${processYear} - ${origin}`;
+};
 interface ProcessCardProps {
   process: any;
   onClick: () => void;
@@ -82,7 +95,7 @@ const ProcessCard = ({
         <div className="flex items-center gap-2">
           <div className={`w-3 h-3 rounded-full ${statusInfo.circleColor}`}></div>
           <span className="text-blue-dark font-arial text-base font-medium">
-            {process.processNumber || `IP ${process.number}/25 - 24ª DP`}
+            {formatProcessNumber(process)}
           </span>
           <span className="text-xs bg-gray-100 px-2 py-1 rounded text-gray-600 ml-auto">IP</span>
         </div>
