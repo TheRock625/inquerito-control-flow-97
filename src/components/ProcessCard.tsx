@@ -53,6 +53,9 @@ const getForwardingColor = (forwarding: string, index: number) => {
   return colors[index % colors.length];
 };
 
+// Função para verificar e garantir que `forwarding` seja um array
+const ensureArray = (value: any) => Array.isArray(value) ? value : [value];
+
 // Função para formatar o número do processo
 const formatProcessNumber = (process: any): string => {
   if (!process) return '--';
@@ -152,7 +155,7 @@ const ProcessCard = ({
           </div>}
 
         {/* Encaminhamento (se houver) */}
-        {process.forwarding && process.forwarding.map((item: string, index: number) => (
+        {process.forwarding && ensureArray(process.forwarding).map((item: string, index: number) => (
           <div key={index} className="text-xs">
             <span className={`px-2 py-1 rounded ${getForwardingColor(item, index)}`}>
               {item}
