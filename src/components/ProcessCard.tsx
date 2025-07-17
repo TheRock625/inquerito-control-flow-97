@@ -2,7 +2,6 @@ import { Button } from '@/components/ui/button';
 import { Calendar, ListTodo } from 'lucide-react';
 import { format, parseISO, differenceInDays, getDay } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 // Função para determinar a cor da bolinha e da data baseada no vencimento
 const getStatusInfo = (dueDate: string) => {
@@ -52,21 +51,19 @@ const getForwardingColor = (forwarding: string) => {
 const formatProcessNumber = (process: any) => {
   const processType = process.type || 'IP'; // IP, TC, PAAI
   const processNumber = process.number || process.processNumber || '10';
-  const processYear = process.year || '25'; // ano em 2 dígitos
+  const processYear = process.year || '  '; // ano em 2 dígitos
   const origin = process.origin || '15º DF';
 
   // Formatar número com pelo menos 2 dígitos
   const formattedNumber = processNumber.toString().padStart(2, '0');
   return `${processType} ${formattedNumber}/${processYear} - ${origin}`;
 };
-
 interface ProcessCardProps {
   process: any;
   onClick: () => void;
   completedActions?: string[];
   onEdit?: () => void;
 }
-
 const ProcessCard = ({
   process,
   onClick,
@@ -77,97 +74,70 @@ const ProcessCard = ({
 
   // Contar pendências não completadas
   const pendingActions = process.pending_actions || process.pendingActions || [];
-  const activePendingActions = pendingActions.filter((action: string) => !completedActions.includes(action));
-  const pendingCount = activePendingActions.length;
+  const pendingCount = pendingActions.length - completedActions.length;
+  return <div className="bg-white border border-gray-300 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 p-3 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-200" onClick={onClick} style={{
+    margin: '10px',
+    padding: '8px'
+  }}>
+      <div className="space-y-3">
+        {/* Cabeçalho com bolinha colorida e número do processo */}
+        <div className="flex items-center gap-2">
+          <div className={`w-3 h-3 rounded-full ${statusInfo.circleColor}`}></div>
+          <span className="text-blue-dark font-arial text-base font-medium">
+            {formatProcessNumber(process)}
+          </span>
+          <span className="text-xs bg-gray-100 px-2 py-1 rounded text-gray-600 ml-auto">IP</span>
+        </div>
 
-  return (
-    <TooltipProvider>
-      <div className="bg-white border border-gray-300 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 p-3 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-200" onClick={onClick} style={{
-        margin: '10px',
-        padding: '8px'
-      }}>
-        <div className="space-y-3">
-          {/* Cabeçalho com bolinha colorida e número do processo */}
-          <div className="flex items-center gap-2">
-            <div className={`w-3 h-3 rounded-full ${statusInfo.circleColor}`}></div>
-            <span className="text-blue-dark font-arial text-base font-medium">
-              {formatProcessNumber(process)}
+        {/* Descrição do processo */}
+        <div className="text-black text-sm font-arial">
+          {process.summary || process.type || 'ESTELIONATO.'}
+        </div>
+
+        {/* Vencimento */}
+        <div className="flex items-center gap-2 text-xs">
+          <Calendar className="w-3 h-3 text-gray-500" />
+          <span className="font-bold text-gray-800">Vencimento:</span>
+          <span className={`${statusInfo.dateColor} font-medium`}>
+            {format(parseISO(process.dueDate), "dd/MM/yyyy", {
+            locale: ptBR
+          })}
+          </span>
+        </div>
+
+        {/* Status */}
+        <div className="flex items-center gap-2 text-xs">
+          <div className="w-2 h-2 rounded-full bg-gray-400"></div>
+          <span className="text-gray-500">Status:</span>
+          <span className="font-bold text-gray-700">{process.status}</span>
+        </div>
+
+        {/* Providências */}
+        {pendingActions.length > 0 && <div className="flex items-center gap-2 text-xs">
+            <ListTodo className="w-3 h-3 text-orange-500" />
+            <span className="text-gray-500">Providências:</span>
+            <span className="text-orange-600 font-medium">
+              {pendingCount} pendente{pendingCount !== 1 ? 's' : ''}
             </span>
-            <span className="text-xs bg-gray-100 px-2 py-1 rounded text-gray-600 ml-auto">IP</span>
-          </div>
+          </div>}
 
-          {/* Descrição do processo */}
-          <div className="text-black text-sm font-arial">
-            {process.summary || process.type || 'ESTELIONATO.'}
-          </div>
-
-          {/* Vencimento */}
-          <div className="flex items-center gap-2 text-xs">
-            <Calendar className="w-3 h-3 text-gray-500" />
-            <span className="font-bold text-gray-800">Vencimento:</span>
-            <span className={`${statusInfo.dateColor} font-medium`}>
-              {format(parseISO(process.dueDate), "dd/MM/yyyy", {
-                locale: ptBR
-              })}
+        {/* Encaminhamento (se houver) */}
+        {process.forwarding && <div className="text-xs">
+            <span className={`px-2 py-1 rounded text-xs ${getForwardingColor(process.forwarding)}`}>
+              {process.forwarding}
             </span>
-          </div>
+          </div>}
 
-          {/* Status */}
-          <div className="flex items-center gap-2 text-xs">
-            <div className="w-2 h-2 rounded-full bg-gray-400"></div>
-            <span className="text-gray-500">Status:</span>
-            <span className="font-bold text-gray-700">{process.status}</span>
-          </div>
-
-          {/* Providências */}
-          {pendingActions.length > 0 && (
-            <div className="flex items-center gap-2 text-xs">
-              <ListTodo className="w-3 h-3 text-orange-500" />
-              <span className="text-gray-500">Providências:</span>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <span className="text-orange-600 font-medium cursor-help">
-                    {pendingCount} pendente{pendingCount !== 1 ? 's' : ''}
-                  </span>
-                </TooltipTrigger>
-                {activePendingActions.length > 0 && (
-                  <TooltipContent>
-                    <div className="max-w-xs">
-                      <p className="font-semibold mb-1">Pendências ativas:</p>
-                      <ul className="space-y-1">
-                        {activePendingActions.map((action: string, index: number) => (
-                          <li key={index} className="text-sm">
-                            • {action}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </TooltipContent>
-                )}
-              </Tooltip>
-            </div>
-          )}
-
-          {/* Encaminhamento (se houver) */}
-          {process.forwarding && <div className="text-xs">
-              <span className={`px-2 py-1 rounded text-xs ${getForwardingColor(process.forwarding)}`}>
-                {process.forwarding}
-              </span>
-            </div>}
-
-          {/* Botões de ação */}
-          <div className="flex gap-2 pt-2 justify-end">
-            <Button variant="default" size="sm" className="bg-blue-primary hover:bg-blue-600 text-white text-sm px-4 py-2 rounded transition-colors duration-200" onClick={e => {
-              e.stopPropagation();
-              onClick();
-            }}>
-              Detalhes
-            </Button>
-          </div>
+        {/* Botões de ação */}
+        <div className="flex gap-2 pt-2 justify-end">
+          <Button variant="default" size="sm" className="bg-blue-primary hover:bg-blue-600 text-white text-sm px-4 py-2 rounded transition-colors duration-200" onClick={e => {
+          e.stopPropagation();
+          onClick();
+        }}>
+            Detalhes
+          </Button>
         </div>
       </div>
-    </TooltipProvider>
-  );
+    </div>;
 };
-
 export default ProcessCard;
