@@ -223,18 +223,19 @@ const Index = () => {
                       dueDate: process.dueDate || process.due_date,
                       pendingActions: process.pendingActions || process.pending_actions || []
                     }}
-                  completedActions={completedActions[process.id] || []}
-                    onClick={() => {
-                      console.log('Clicking on process:', process);
-                      const processWithDates = {
-                        ...process,
-                        dueDate: process.dueDate || process.due_date,
-                        pendingActions: process.pendingActions || process.pending_actions || []
-                      };
-                      console.log('Setting selectedProcess:', processWithDates);
-                      setSelectedProcess(processWithDates);
-                    }}
-                />
+                   completedActions={completedActions[process.id] || []}
+                     onClick={() => {
+                       console.log('Clicking on process:', process);
+                       const processWithDates = {
+                         ...process,
+                         dueDate: process.dueDate || process.due_date,
+                         pendingActions: process.pendingActions || process.pending_actions || []
+                       };
+                       console.log('Setting selectedProcess:', processWithDates);
+                       setSelectedProcess(processWithDates);
+                     }}
+                     onEdit={() => {}}
+                 />
               ))}
             </div>
             

@@ -1,3 +1,4 @@
+import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Calendar, ListTodo } from 'lucide-react';
 import { format, parseISO, differenceInDays, getDay } from 'date-fns';
@@ -86,11 +87,22 @@ const formatProcessNumber = (process: any): string => {
   return `${main}${yearSection}${right}`.trim();
 };
 
+interface ProcessCardProps {
+  process: any;
+  onClick: () => void;
+  onEdit: () => void;
+  completedActions: any[];
+}
 
+const ProcessCard: React.FC<ProcessCardProps> = ({ process, onClick, completedActions }) => {
+  const statusInfo = getStatusInfo(process.dueDate);
+  
   // Contar pendências não completadas
   const pendingActions = process.pending_actions || process.pendingActions || [];
   const pendingCount = pendingActions.length - completedActions.length;
-  return <div className="bg-white border border-gray-300 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 p-3 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-200" onClick={onClick} style={{
+  
+  return (
+    <div className="bg-white border border-gray-300 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 p-3 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-200" onClick={onClick} style={{
     margin: '10px',
     padding: '8px'
   }}>
@@ -153,6 +165,8 @@ const formatProcessNumber = (process: any): string => {
           </Button>
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export default ProcessCard;
