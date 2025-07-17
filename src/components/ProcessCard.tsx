@@ -103,7 +103,7 @@ const ProcessCard = ({
 
         {/* Descrição do processo */}
         <div className="text-black text-sm font-arial">
-          {process.summary || process.type || 'ESTELIONATO.'}
+          {process.summary || process.type || '--'}
         </div>
 
         {/* Vencimento */}
