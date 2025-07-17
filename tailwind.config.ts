@@ -18,6 +18,9 @@ export default {
 			}
 		},
 		extend: {
+			fontFamily: {
+				'sans': ['Arial', 'sans-serif'],
+			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
@@ -61,7 +64,17 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+				// Custom colors for the application
+				'header-bg': 'hsl(var(--header-bg))',
+				'header-foreground': 'hsl(var(--header-foreground))',
+				'card-bg': 'hsl(var(--card-bg))',
+				'button-primary': 'hsl(var(--button-primary))',
+				'button-primary-hover': 'hsl(var(--button-primary-hover))',
+				'text-primary': 'hsl(var(--text-primary))',
+				'text-secondary': 'hsl(var(--text-secondary))',
+				'alert-bg': 'hsl(var(--alert-bg))',
+				'success-indicator': 'hsl(var(--success-indicator))'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

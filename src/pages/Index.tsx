@@ -91,16 +91,16 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header with gray background */}
-      <div className="bg-gray-100 border-b border-gray-200 px-6 py-6">
+    <div className="min-h-screen bg-background">
+      {/* Header with dark blue background */}
+      <div className="bg-header-bg border-b border-border px-6 py-6">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Sistema IP/TC</h1>
-            <p className="text-gray-600 mt-1">Controle de Inquéritos</p>
+            <h1 className="text-3xl font-bold text-header-foreground">Sistema IP/TC</h1>
+            <p className="text-header-foreground/80 mt-1">Controle de Inquéritos</p>
           </div>
           <Button 
-            className="bg-blue-600 hover:bg-blue-700"
+            className="bg-button-primary hover:bg-button-primary-hover text-white transition-colors duration-200"
             onClick={() => setIsNewProcessModalOpen(true)}
           >
             <Plus className="w-4 h-4 mr-2" />
@@ -129,20 +129,20 @@ const Index = () => {
         {/* Statistics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <Card 
-            className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200 cursor-pointer hover:shadow-lg transition-all transform hover:scale-105"
+            className="bg-primary/10 border-primary/20 cursor-pointer hover:shadow-lg transition-all transform hover:scale-105"
             onClick={() => setFilterType('all')}
           >
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-blue-700">Total de Processos</CardTitle>
-              <BarChart3 className="h-4 w-4 text-blue-600" />
+              <CardTitle className="text-sm font-medium text-primary">Total de Processos</CardTitle>
+              <BarChart3 className="h-4 w-4 text-primary" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-blue-800">{totalProcesses}</div>
+              <div className="text-2xl font-bold text-primary">{totalProcesses}</div>
             </CardContent>
           </Card>
 
           <Card 
-            className="bg-gradient-to-br from-red-50 to-red-100 border-red-200 cursor-pointer hover:shadow-lg transition-all transform hover:scale-105"
+            className="bg-destructive/10 border-destructive/20 cursor-pointer hover:shadow-lg transition-all transform hover:scale-105"
             onClick={() => setFilterType('overdue')}
           >
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -155,7 +155,7 @@ const Index = () => {
           </Card>
 
           <Card 
-            className="bg-gradient-to-br from-yellow-50 to-yellow-100 border-yellow-200 cursor-pointer hover:shadow-lg transition-all transform hover:scale-105"
+            className="bg-yellow-50 border-yellow-200 cursor-pointer hover:shadow-lg transition-all transform hover:scale-105"
             onClick={() => setFilterType('dueSoon')}
           >
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -168,7 +168,7 @@ const Index = () => {
           </Card>
 
           <Card 
-            className="bg-gradient-to-br from-green-50 to-green-100 border-green-200 cursor-pointer hover:shadow-lg transition-all transform hover:scale-105"
+            className="bg-green-50 border-green-200 cursor-pointer hover:shadow-lg transition-all transform hover:scale-105"
             onClick={() => setFilterType('completed')}
           >
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -214,7 +214,7 @@ const Index = () => {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {filteredProcesses.map((process) => (
                 <ProcessCard
                   key={process.id}
