@@ -1,52 +1,58 @@
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { AlertTriangle, Clock, Check, Calendar, ListTodo, Edit } from 'lucide-react';
-import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
-import { cn } from '@/lib/utils';
+import { Calendar, ListTodo } from 'lucide-react';
 import { format, parseISO, differenceInDays, getDay } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { getForwardingColor } from '@/utils/forwardingColors';
-const getAlertLevel = (dueDate: string) => {
-  const today = new Date();
-  const due = parseISO(dueDate);
-  const daysDiff = differenceInDays(due, today);
-  if (daysDiff < 0) return 'critical';
-  if (daysDiff <= 2) return 'warning';
-  return 'normal';
-};
-const isWeekend = (dueDate: string) => {
-  const due = parseISO(dueDate);
-  const dayOfWeek = getDay(due);
-  return dayOfWeek === 0 || dayOfWeek === 6; // 0 = Sunday, 6 = Saturday
-};
-const getDueDateColor = (dueDate: string) => {
-  const today = new Date();
-  const due = parseISO(dueDate);
-  const daysDiff = differenceInDays(due, today);
 
-  // Se está vencido (dias negativos), vermelho
+// Função para determinar a cor da bolinha e da data baseada no vencimento
+const getStatusInfo = (dueDate: string) => {
+  const today = new Date();
+  const due = parseISO(dueDate);
+  const daysDiff = differenceInDays(due, today);
+  
+  // Verificar se o vencimento é no final de semana da semana corrente
+  const isCurrentWeekend = () => {
+    const dayOfWeek = getDay(due);
+    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6; // 0 = Sunday, 6 = Saturday
+    const diffInDays = Math.abs(daysDiff);
+    return isWeekend && diffInDays <= 7;
+  };
+
   if (daysDiff < 0) {
-    return 'text-red-600 font-bold';
+    // Vencido
+    return {
+      circleColor: 'bg-red-500',
+      dateColor: 'text-red-500',
+      status: 'overdue'
+    };
+  } else if (daysDiff <= 2 || isCurrentWeekend()) {
+    // Próximo do vencimento (2 dias ou final de semana da semana corrente)
+    return {
+      circleColor: 'bg-yellow-500',
+      dateColor: 'text-yellow-600',
+      status: 'warning'
+    };
+  } else {
+    // Em dia
+    return {
+      circleColor: 'bg-green-500',
+      dateColor: 'text-green-600',
+      status: 'normal'
+    };
   }
-  // Se não está vencido, cor padrão
-  return 'text-text-primary font-medium';
 };
-const getStatusColor = (status: string) => {
-  switch (status) {
-    case 'Aguardando Oitiva':
-      return 'bg-blue-100 text-blue-800';
-    case 'Em Diligência':
-      return 'bg-purple-100 text-purple-800';
-    case 'Pronto para Relatar':
-      return 'bg-sky-100 text-sky-800';
-    case 'Aguardando Perícia':
-      return 'bg-orange-100 text-orange-800';
-    case 'RELATADO':
-    case 'Relatado':
-      return 'bg-green-100 text-green-800';
-    default:
-      return 'bg-gray-100 text-gray-800';
-  }
+
+// Função para obter cores de encaminhamento
+const getForwardingColor = (forwarding: string) => {
+  const colors = [
+    'bg-blue-100 text-blue-800',
+    'bg-purple-100 text-purple-800',
+    'bg-orange-100 text-orange-800',
+    'bg-teal-100 text-teal-800',
+    'bg-pink-100 text-pink-800'
+  ];
+  
+  const index = forwarding.length % colors.length;
+  return colors[index];
 };
 interface ProcessCardProps {
   process: any;
@@ -54,94 +60,80 @@ interface ProcessCardProps {
   completedActions?: string[];
   onEdit?: () => void;
 }
+
 const ProcessCard = ({
   process,
   onClick,
   completedActions = [],
   onEdit
 }: ProcessCardProps) => {
-  const alertLevel = getAlertLevel(process.dueDate);
-  const isWeekendDate = isWeekend(process.dueDate);
-  const showAlert = alertLevel === 'warning' || isWeekendDate;
-
-  // Verificar se o processo está vencido para colorir também a palavra "Vencimento:"
-  const today = new Date();
-  const due = parseISO(process.dueDate);
-  const daysDiff = differenceInDays(due, today);
-  const isOverdue = daysDiff < 0;
-
+  const statusInfo = getStatusInfo(process.dueDate);
+  
   // Contar pendências não completadas
   const pendingActions = process.pending_actions || process.pendingActions || [];
   const pendingCount = pendingActions.length - completedActions.length;
 
-  // Indicador de status baseado no vencimento
-  const getStatusIndicator = () => {
-    if (isOverdue) return '🔴'; // Vencido
-    if (alertLevel === 'warning') return '🟡'; // Próximo do vencimento
-    return '🟢'; // Normal
-  };
   return (
-    <div className="bg-card border border-border rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 p-6 cursor-pointer" onClick={onClick}>
-      <div className="space-y-4">
-        {/* Header com círculo verde e número/ano do processo */}
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-success-indicator rounded-full flex items-center justify-center">
-            <span className="text-white text-xs font-bold">{process.number}</span>
-          </div>
-          <div className="flex-1">
-            <div className="flex items-center gap-2">
-              <span className="text-base font-bold text-header-bg">
-                {process.processNumber || `IP ${process.number}/25 - 24ª DP`}
-              </span>
-              <span className="text-xs bg-gray-100 px-2 py-1 rounded">IP</span>
-            </div>
-            <div className="text-sm font-medium text-text-primary mt-1">
-              Inquérito Policial
-            </div>
-          </div>
+    <div className="bg-white border border-gray-300 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 p-4 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-200" 
+         onClick={onClick}
+         style={{ margin: '10px', padding: '10px' }}>
+      <div className="space-y-3">
+        {/* Cabeçalho com bolinha colorida e número do processo */}
+        <div className="flex items-center gap-2">
+          <div className={`w-3 h-3 rounded-full ${statusInfo.circleColor}`}></div>
+          <span className="text-blue-dark font-arial text-base font-medium">
+            {process.processNumber || `IP ${process.number}/25 - 24ª DP`}
+          </span>
+          <span className="text-xs bg-gray-100 px-2 py-1 rounded text-gray-600 ml-auto">IP</span>
         </div>
 
         {/* Descrição do processo */}
-        <div className="text-sm text-text-primary font-medium">
+        <div className="text-black text-sm font-arial">
           {process.summary || process.type || 'ESTELIONATO.'}
         </div>
 
         {/* Vencimento */}
-        <div className="flex items-center gap-2 text-sm">
-          <Calendar className="w-4 h-4 text-text-secondary" />
-          <span className="text-text-secondary">Vencimento:</span>
-          <span className={getDueDateColor(process.dueDate)}>
+        <div className="flex items-center gap-2 text-xs">
+          <Calendar className="w-3 h-3 text-gray-500" />
+          <span className="text-gray-500">Vencimento:</span>
+          <span className={`${statusInfo.dateColor} font-medium`}>
             {format(parseISO(process.dueDate), "dd/MM/yyyy", { locale: ptBR })}
           </span>
-          {isOverdue && (
-            <AlertTriangle className="w-4 h-4 text-destructive ml-1" />
-          )}
         </div>
 
         {/* Status */}
-        <div className="flex items-center gap-2 text-sm">
-          <div className="w-3 h-3 rounded-full bg-text-secondary"></div>
-          <span className="text-text-secondary">Status:</span>
-          <span className="font-medium text-text-primary">{process.status}</span>
+        <div className="flex items-center gap-2 text-xs">
+          <div className="w-2 h-2 rounded-full bg-gray-400"></div>
+          <span className="text-gray-500">Status:</span>
+          <span className="font-bold text-gray-700">{process.status}</span>
         </div>
 
         {/* Providências */}
         {pendingActions.length > 0 && (
-          <div className="flex items-center gap-2 text-sm">
-            <ListTodo className="w-4 h-4 text-orange-500" />
-            <span className="text-text-secondary">Providências:</span>
+          <div className="flex items-center gap-2 text-xs">
+            <ListTodo className="w-3 h-3 text-orange-500" />
+            <span className="text-gray-500">Providências:</span>
             <span className="text-orange-600 font-medium">
               {pendingCount} pendente{pendingCount !== 1 ? 's' : ''}
             </span>
           </div>
         )}
 
+        {/* Encaminhamento (se houver) */}
+        {process.forwarding && (
+          <div className="text-xs">
+            <span className={`px-2 py-1 rounded text-xs ${getForwardingColor(process.forwarding)}`}>
+              {process.forwarding}
+            </span>
+          </div>
+        )}
+
         {/* Botões de ação */}
-        <div className="flex gap-2 pt-2">
+        <div className="flex gap-2 pt-2 justify-end">
           <Button 
             variant="default" 
             size="sm" 
-            className="bg-button-primary hover:bg-button-primary-hover text-white border-none transition-colors duration-200 flex-1"
+            className="bg-blue-primary hover:bg-blue-600 text-white text-sm px-4 py-2 rounded transition-colors duration-200"
             onClick={(e) => {
               e.stopPropagation();
               onClick();
@@ -151,15 +143,15 @@ const ProcessCard = ({
           </Button>
           {process.forwarding && (
             <Button 
-              variant="secondary" 
+              variant="outline" 
               size="sm"
-              className="bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors duration-200"
+              className="bg-blue-light text-blue-dark hover:bg-blue-100 text-sm px-4 py-2 rounded transition-colors duration-200"
               onClick={(e) => {
                 e.stopPropagation();
                 onEdit?.();
               }}
             >
-              {process.forwarding}
+              Escrivão
             </Button>
           )}
         </div>

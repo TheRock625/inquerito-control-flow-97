@@ -74,7 +74,12 @@ export default {
 				'text-primary': 'hsl(var(--text-primary))',
 				'text-secondary': 'hsl(var(--text-secondary))',
 				'alert-bg': 'hsl(var(--alert-bg))',
-				'success-indicator': 'hsl(var(--success-indicator))'
+				'success-indicator': 'hsl(var(--success-indicator))',
+				
+				// New colors for updated design
+				'blue-dark': 'hsl(var(--blue-dark))',
+				'blue-primary': 'hsl(var(--blue-primary))',
+				'blue-light': 'hsl(var(--blue-light))'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

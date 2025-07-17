@@ -49,6 +49,11 @@ All colors MUST be HSL.
     --alert-bg: 0 30% 92%;
     --success-indicator: 120 100% 40%;
 
+    /* New colors for the updated design */
+    --blue-dark: 210 100% 20%;  /* #003366 */
+    --blue-primary: 211 100% 56%; /* #007BFF */
+    --blue-light: 194 100% 95%;   /* Light blue background */
+
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 240 5.9% 10%;
@@ -114,5 +119,9 @@ All colors MUST be HSL.
   
   .smooth-transition {
     @apply transition-all duration-300;
+  }
+  
+  .font-arial {
+    font-family: Arial, sans-serif;
   }
 }
