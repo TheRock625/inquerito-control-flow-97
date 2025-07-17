@@ -99,7 +99,7 @@ const formatProcessNumber = (process: any): string => {
 
 const ProvidenciasPopover = ({ pendingActions, completedActions }) => {
   return (
-    <div className="absolute bg-white border border-gray-300 rounded-lg shadow-md p-4 mt-2">
+    <div className="absolute bg-yellow-100 border border-gray-300 rounded-lg shadow-md p-4 mt-2">
       <span className="font-semibold text-gray-900">Providências Pendentes</span>
       <ul className="space-y-1 mt-2">
         {pendingActions.map((action, index) => (
@@ -204,3 +204,4 @@ const ProcessCard = ({
 };
 
 export default ProcessCard;
+
