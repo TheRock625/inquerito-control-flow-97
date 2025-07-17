@@ -42,10 +42,15 @@ const getStatusInfo = (dueDate: string) => {
 };
 
 // Função para obter cores de encaminhamento
-const getForwardingColor = (forwarding: string) => {
-  const colors = ['bg-blue-100 text-blue-800', 'bg-purple-100 text-purple-800', 'bg-orange-100 text-orange-800', 'bg-teal-100 text-teal-800', 'bg-pink-100 text-pink-800'];
-  const index = forwarding.length % colors.length;
-  return colors[index];
+const getForwardingColor = (forwarding: string, index: number) => {
+  const colors = [
+    'bg-blue-100 text-blue-800',
+    'bg-purple-100 text-purple-800',
+    'bg-orange-100 text-orange-800',
+    'bg-teal-100 text-teal-800',
+    'bg-pink-100 text-pink-800'
+  ];
+  return colors[index % colors.length];
 };
 
 // Função para formatar o número do processo
@@ -147,11 +152,13 @@ const ProcessCard = ({
           </div>}
 
         {/* Encaminhamento (se houver) */}
-        {process.forwarding && <div className="text-xs">
-            <span className={`px-2 py-1 rounded ${getForwardingColor(process.forwarding)}`}>
-              {process.forwarding}
+        {process.forwarding && process.forwarding.map((item: string, index: number) => (
+          <div key={index} className="text-xs">
+            <span className={`px-2 py-1 rounded ${getForwardingColor(item, index)}`}>
+              {item}
             </span>
-          </div>}
+          </div>
+        ))}
 
         {/* Botões de ação */}
         <div className="flex gap-2 pt-2 justify-end">
