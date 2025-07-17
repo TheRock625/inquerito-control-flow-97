@@ -41,16 +41,30 @@ const getStatusInfo = (dueDate: string) => {
   }
 };
 
-// Função para obter cores de encaminhamento
-const getForwardingColor = (forwarding: string, index: number) => {
+// Função para obter cores de encaminhamento baseada no tipo
+const getForwardingColor = (forwarding: string) => {
   const colors = [
     'bg-blue-100 text-blue-800',
     'bg-purple-100 text-purple-800',
     'bg-orange-100 text-orange-800',
     'bg-teal-100 text-teal-800',
-    'bg-pink-100 text-pink-800'
+    'bg-pink-100 text-pink-800',
+    'bg-indigo-100 text-indigo-800',
+    'bg-green-100 text-green-800',
+    'bg-red-100 text-red-800',
+    'bg-yellow-100 text-yellow-800',
+    'bg-gray-100 text-gray-800'
   ];
-  return colors[index % colors.length];
+  
+  // Criar hash simples baseado no texto do encaminhamento
+  let hash = 0;
+  for (let i = 0; i < forwarding.length; i++) {
+    const char = forwarding.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash; // Convert to 32-bit integer
+  }
+  
+  return colors[Math.abs(hash) % colors.length];
 };
 
 // Função para verificar e garantir que `forwarding` seja um array
@@ -157,7 +171,7 @@ const ProcessCard = ({
         {/* Encaminhamento (se houver) */}
         {process.forwarding && ensureArray(process.forwarding).map((item: string, index: number) => (
           <div key={index} className="text-xs">
-            <span className={`px-2 py-1 rounded ${getForwardingColor(item, index)}`}>
+            <span className={`px-2 py-1 rounded ${getForwardingColor(item)}`}>
               {item}
             </span>
           </div>
