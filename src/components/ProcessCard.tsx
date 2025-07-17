@@ -74,9 +74,9 @@ const ProcessCard = ({
   const pendingCount = pendingActions.length - completedActions.length;
 
   return (
-    <div className="bg-white border border-gray-300 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 p-4 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-200" 
+    <div className="bg-white border border-gray-300 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 p-3 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-200" 
          onClick={onClick}
-         style={{ margin: '10px', padding: '10px' }}>
+         style={{ margin: '10px', padding: '8px' }}>
       <div className="space-y-3">
         {/* Cabeçalho com bolinha colorida e número do processo */}
         <div className="flex items-center gap-2">
