@@ -50,13 +50,14 @@ const getForwardingColor = (forwarding: string) => {
 
 // Função para formatar o número do processo
 const formatProcessNumber = (process: any): string => {
-  if (!process) return '';
+  if (!process) return '--';
   
   const typeMap: Record<string, string> = {
     'Inquérito Policial': 'IP',
     'Termo Circunstanciado': 'TC',
     'Procedimento de Apuração de Ato Infracional': 'PAAI'
   };
+  
   const rawType = process.type ?? '';
   const typeAbbreviation = typeMap[rawType] ?? '';
   
@@ -75,7 +76,7 @@ const formatProcessNumber = (process: any): string => {
   const yearSection = formattedYear ? `/${formattedYear}` : '';
   const right = origin ? ` - ${origin}` : '';
   
-  return `${main}${yearSection}${right}`.trim();
+  return `${main}${yearSection}${right}`.trim() || '--';
 };
 
 interface ProcessCardProps {
