@@ -82,7 +82,7 @@ const ProcessCard = ({
         <div className="flex items-center gap-2">
           <div className={`w-3 h-3 rounded-full ${statusInfo.circleColor}`}></div>
           <span className="text-blue-dark font-arial text-base font-medium">
-            {process.processNumber || `IP ${process.number}/25 - 24ª DP`}
+            {process.processNumber || `IP ${String(process.number).padStart(2, '0')}/25 - 24º DP`}
           </span>
           <span className="text-xs bg-gray-100 px-2 py-1 rounded text-gray-600 ml-auto">IP</span>
         </div>
