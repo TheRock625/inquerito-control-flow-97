@@ -1,4 +1,3 @@
-import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Calendar, ListTodo } from 'lucide-react';
 import { format, parseISO, differenceInDays, getDay } from 'date-fns';
@@ -52,16 +51,7 @@ const getForwardingColor = (forwarding: string) => {
 const formatProcessNumber = (process: any): string => {
   if (!process) return '';
 
-  // Mapeamento do tipo por extenso para sigla
-  const typeMap: Record<string, string> = {
-    'Inquérito Policial': 'IP',
-    'Termo Circunstanciado': 'TC',
-    'Procedimento de Apuração de Ato Infracional': 'PAAI'
-  };
-
-  const rawType = process.type ?? '';
-  const typeAbbreviation = typeMap[rawType] ?? ''; // se não for um dos 3, ignora
-
+  const type = process.type ?? '';
   const rawNumber = process.number ?? process.processNumber;
   const formattedNumber =
     rawNumber !== undefined ? rawNumber.toString().padStart(2, '0') : '';
@@ -70,39 +60,22 @@ const formatProcessNumber = (process: any): string => {
   let formattedYear = '';
   if (rawYear !== undefined) {
     const yearStr = rawYear.toString();
-    formattedYear = yearStr.slice(-2); // pega os 2 últimos dígitos
+    formattedYear = yearStr.slice(-2); // mostra apenas os dois últimos dígitos
   }
 
   const origin = process.origin ?? '';
 
-  // Monta a string final somente com os dados existentes
-  const main = [typeAbbreviation, formattedNumber]
-    .filter(Boolean)
-    .join(' ')
-    .trim();
-
+  const main = [type, formattedNumber].filter(Boolean).join(' ').trim();
   const yearSection = formattedYear ? `/${formattedYear}` : '';
   const right = origin ? ` - ${origin}` : '';
 
   return `${main}${yearSection}${right}`.trim();
 };
 
-interface ProcessCardProps {
-  process: any;
-  onClick: () => void;
-  onEdit: () => void;
-  completedActions: any[];
-}
-
-const ProcessCard: React.FC<ProcessCardProps> = ({ process, onClick, completedActions }) => {
-  const statusInfo = getStatusInfo(process.dueDate);
-  
   // Contar pendências não completadas
   const pendingActions = process.pending_actions || process.pendingActions || [];
   const pendingCount = pendingActions.length - completedActions.length;
-  
-  return (
-    <div className="bg-white border border-gray-300 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 p-3 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-200" onClick={onClick} style={{
+  return <div className="bg-white border border-gray-300 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 p-3 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-200" onClick={onClick} style={{
     margin: '10px',
     padding: '8px'
   }}>
@@ -165,8 +138,6 @@ const ProcessCard: React.FC<ProcessCardProps> = ({ process, onClick, completedAc
           </Button>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default ProcessCard;
