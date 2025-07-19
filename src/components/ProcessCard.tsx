@@ -133,7 +133,10 @@ const ProcessCard = ({
   const pendingCount = pendingActions.length - completedActions.length;
 
   return (
-    <div className="relative bg-white border border-gray-300 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 p-3 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-200" onClick={onClick}>
+    <div
+      className="relative bg-white border border-gray-300 rounded-lg shadow-sm hover:shadow-md transition-transform transform hover:scale-105 duration-300 p-3 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-200"
+      onClick={onClick}
+    >
       <div className="space-y-3">
         
         <div className="flex items-center gap-2">
@@ -204,4 +207,5 @@ const ProcessCard = ({
 };
 
 export default ProcessCard;
+
 
